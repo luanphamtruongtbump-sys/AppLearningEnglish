@@ -1,0 +1,12 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "App Học Tiếng Anh",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Tiếng Anh",
+  "start_url": "/",
+  "theme_color": "#085d8a",
+  "description": "Ứng dụng học từ vựng tiếng Anh"
+}
