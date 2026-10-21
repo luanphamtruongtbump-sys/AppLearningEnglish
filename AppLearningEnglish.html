@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phần Mềm Học Tiếng Anh Của Luân</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .card-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
+        button { background-color: #4285F4; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #357ae8; }
+        input[type="text"] { padding: 8px; font-size: 16px; width: 60%; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+        .hidden { display: none; }
+        #card-front { font-size: 20px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <!-- Khu vực Đăng nhập -->
+        <div id="login-section">
+            <h2>Đăng Nhập Hệ Thống</h2>
+            <p>Học tập thông minh cùng Spaced Repetition</p>
+            <button id="login-btn">Đăng nhập bằng Google</button>
+        </div>
+
+        <!-- Khu vực Học tập (Ẩn khi chưa đăng nhập) -->
+        <div id="app-section" class="hidden">
+            <h3 id="user-greeting">Xin chào!</h3>
+            <button id="logout-btn" style="background-color: #db4437; padding: 5px 10px; font-size: 12px;">Đăng xuất</button>
+            <hr style="margin: 20px 0;">
+            
+            <div id="flashcard-box">
+                <div id="card-front">Đang tải thẻ học...</div>
+                <div id="card-back" class="hidden">
+                    <p id="card-answer" style="font-weight: bold; color: green; font-size: 18px;"></p>
+                </div>
+                <button id="check-btn">Kiểm tra</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nhúng Firebase SDK phiên bản mới nhất từ CDN -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Cấu hình Firebase của bạn
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIIFo2JMolCY5Ygxdy992z2kyBgXF2L0M",
+            authDomain: "applearningenglish-4c758.firebaseapp.com",
+            projectId: "applearningenglish-4c758",
+            storageBucket: "applearningenglish-4c758.firebasestorage.app",
+            messagingSenderId: "947321154941",
+            appId: "1:947321154941:web:27941cb908044dd23d3014",
+            measurementId: "G-H263DSZSL3"
+        };
+
+        // Khởi tạo Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        const loginBtn = document.getElementById("login-btn");
+        const logoutBtn = document.getElementById("logout-btn");
+        const loginSection = document.getElementById("login-section");
+        const appSection = document.getElementById("app-section");
+        const userGreeting = document.getElementById("user-greeting");
+        const checkBtn = document.getElementById("check-btn");
+
+        // Sự kiện Đăng nhập Google
+        loginBtn.addEventListener("click", () => {
+            signInWithPopup(auth, provider).catch((error) => {
+                console.error("Lỗi đăng nhập:", error);
+            });
+        });
+
+        // Sự kiện Đăng xuất
+        logoutBtn.addEventListener("click", () => {
+            signOut(auth);
+        });
+
+        // Theo dõi trạng thái tài khoản đăng nhập
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginSection.classList.add("hidden");
+                appSection.classList.remove("hidden");
+                userGreeting.innerText = `Chào mừng, ${user.displayName}!`;
+                loadMockCard(); // Tải thử thẻ học mẫu
+            } else {
+                loginSection.classList.remove("hidden");
+                appSection.classList.add("hidden");
+            }
+        });
+
+        // Hàm mô phỏng hiển thị thẻ điền từ (Cloze Deletion)
+        function loadMockCard() {
+            const rawSentence = "I want to improve my {{c1::english}} vocabulary.";
+            let originalWord = "";
+            
+            const htmlContent = rawSentence.replace(/{{c1::(.*?)}}/g, (match, p1) => {
+                originalWord = p1;
+                return `<br><br><input type="text" id="user-input" placeholder="Điền từ..." autocomplete="off">`;
+            });
+
+            document.getElementById("card-front").innerHTML = htmlContent;
+            document.getElementById("card-back").classList.add("hidden");
+            checkBtn.innerText = "Kiểm tra";
+
+            checkBtn.onclick = () => {
+                const userVal = document.getElementById("user-input").value.trim().toLowerCase();
+                const backDiv = document.getElementById("card-back");
+                const ansText = document.getElementById("card-answer");
+                
+                backDiv.classList.remove("hidden");
+                if (userVal === originalWord.toLowerCase()) {
+                    ansText.innerText = "Chính xác! 🎉";
+                    ansText.style.color = "green";
+                } else {
+                    ansText.innerText = `Chưa đúng. Đáp án là: ${originalWord}`;
+                    ansText.style.color = "red";
+                }
+            };
+        }
+    </script>
+</body>
+</html>
