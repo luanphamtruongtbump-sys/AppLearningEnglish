@@ -3,127 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phần Mềm Học Tiếng Anh Của Luân</title>
+    <title>App Học Tiếng Anh V2.0</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .card-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
-        button { background-color: #4285F4; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { text-align: center; color: #4285F4; }
+        button { background-color: #4285F4; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 15px; transition: 0.2s; }
         button:hover { background-color: #357ae8; }
-        input[type="text"] { padding: 8px; font-size: 16px; width: 60%; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
-        .hidden { display: none; }
-        #card-front { font-size: 20px; margin-bottom: 20px; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .hidden { display: none !important; }
+        
+        /* Tabs */
+        .tabs { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; margin-bottom: 20px; }
+        .tab-btn { flex: 1; background: none; color: #666; font-weight: bold; padding: 10px; border-radius: 0; }
+        .tab-btn.active { color: #4285F4; border-bottom: 3px solid #4285F4; }
+
+        /* Nhập liệu */
+        textarea { width: 100%; height: 120px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 10px; }
+        .word-count { font-size: 13px; color: #28a745; margin-bottom: 10px; font-weight: bold; }
+
+        /* Flashcard */
+        .flashcard { background: #fff; border: 2px solid #e0e0e0; height: 200px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; user-select: none; text-align: center; padding: 20px;}
+        .flashcard.flipped { background: #e8efaa; color: #333; }
+        .card-controls { display: flex; justify-content: space-between; }
+
+        /* Trắc nghiệm */
+        .quiz-word { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 20px; }
+        .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .quiz-btn { background: #f8f9fa; color: #333; border: 2px solid #e0e0e0; font-size: 16px; padding: 15px; }
+        .quiz-btn:hover { background: #e2e6ea; }
+        .quiz-btn.correct { background: #28a745; color: white; border-color: #28a745; }
+        .quiz-btn.wrong { background: #dc3545; color: white; border-color: #dc3545; }
+
+        /* Ghép thẻ (Match) */
+        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .match-card { background: #fff; border: 2px solid #ccc; padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .match-card.selected { border-color: #4285F4; background: #e8f0fe; }
+        .match-card.matched { visibility: hidden; }
+        .match-card.wrong { background: #f8d7da; border-color: #dc3545; }
+
+        #login-section { text-align: center; padding: 40px 0; }
     </style>
 </head>
 <body>
 
-    <div class="card-container">
-        <!-- Khu vực Đăng nhập -->
-        <div id="login-section">
-            <h2>Đăng Nhập Hệ Thống</h2>
-            <p>Học tập thông minh cùng Spaced Repetition</p>
-            <button id="login-btn">Đăng nhập bằng Google</button>
-        </div>
-
-        <!-- Khu vực Học tập (Ẩn khi chưa đăng nhập) -->
-        <div id="app-section" class="hidden">
-            <h3 id="user-greeting">Xin chào!</h3>
-            <button id="logout-btn" style="background-color: #db4437; padding: 5px 10px; font-size: 12px;">Đăng xuất</button>
-            <hr style="margin: 20px 0;">
-            
-            <div id="flashcard-box">
-                <div id="card-front">Đang tải thẻ học...</div>
-                <div id="card-back" class="hidden">
-                    <p id="card-answer" style="font-weight: bold; color: green; font-size: 18px;"></p>
-                </div>
-                <button id="check-btn">Kiểm tra</button>
-            </div>
-        </div>
+<div class="container">
+    <!-- Khu vực đăng nhập -->
+    <div id="login-section">
+        <h2>App Học Tiếng Anh V2.0</h2>
+        <p>Hệ thống ôn tập từ vựng thông minh</p>
+        <button id="login-btn">Đăng nhập bằng Google</button>
     </div>
 
-    <!-- Nhúng Firebase SDK phiên bản mới nhất từ CDN -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <!-- Khu vực phần mềm (ẩn khi chưa đăng nhập) -->
+    <div id="app-section" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span id="user-greeting" style="font-weight: bold; color: #555;"></span>
+            <button id="logout-btn" style="background: #dc3545; padding: 5px 10px; font-size: 12px;">Đăng xuất</button>
+        </div>
 
-        // Cấu hình Firebase của bạn
-        const firebaseConfig = {
-            apiKey: "AIzaSyDIIFo2JMolCY5Ygxdy992z2kyBgXF2L0M",
-            authDomain: "applearningenglish-4c758.firebaseapp.com",
-            projectId: "applearningenglish-4c758",
-            storageBucket: "applearningenglish-4c758.firebasestorage.app",
-            messagingSenderId: "947321154941",
-            appId: "1:947321154941:web:27941cb908044dd23d3014",
-            measurementId: "G-H263DSZSL3"
-        };
+        <!-- Thanh điều hướng Tab -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('import')">Nhập Từ</button>
+            <button class="tab-btn" onclick="switchTab('flashcard')">Thẻ Bài</button>
+            <button class="tab-btn" onclick="switchTab('quiz')">Trắc Nghiệm</button>
+            <button class="tab-btn" onclick="switchTab('match')">Ghép Từ</button>
+        </div>
 
-        // Khởi tạo Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
+        <!-- Tab 1: Nhập liệu -->
+        <div id="tab-import" class="tab-content">
+            <p>Nhập từ vựng theo định dạng: <b>Tiếng Anh - Tiếng Việt</b> (mỗi từ 1 dòng).</p>
+            <textarea id="import-text" placeholder="Ví dụ:&#10;Apple - Quả táo&#10;Run - Chạy&#10;Beautiful - Xinh đẹp"></textarea>
+            <div id="word-count" class="word-count">Kho từ vựng hiện tại: 0 từ</div>
+            <button id="save-words-btn" style="width: 100%;">Lưu vào Đám mây (Firestore)</button>
+        </div>
 
-        const loginBtn = document.getElementById("login-btn");
-        const logoutBtn = document.getElementById("logout-btn");
-        const loginSection = document.getElementById("login-section");
-        const appSection = document.getElementById("app-section");
-        const userGreeting = document.getElementById("user-greeting");
-        const checkBtn = document.getElementById("check-btn");
+        <!-- Tab 2: Flashcard -->
+        <div id="tab-flashcard" class="tab-content hidden">
+            <div id="fc-card" class="flashcard">Chưa có từ vựng</div>
+            <div class="card-controls">
+                <button id="fc-prev">⬅ Trước</button>
+                <span id="fc-counter" style="line-height: 40px; font-weight: bold;">0/0</span>
+                <button id="fc-next">Sau ➡</button>
+            </div>
+        </div>
 
-        // Sự kiện Đăng nhập Google
-        loginBtn.addEventListener("click", () => {
-            signInWithPopup(auth, provider).catch((error) => {
-                console.error("Lỗi đăng nhập:", error);
-            });
-        });
+        <!-- Tab 3: Trắc nghiệm (Quiz) -->
+        <div id="tab-quiz" class="tab-content hidden">
+            <div id="quiz-word" class="quiz-word">Chưa có từ vựng</div>
+            <div id="quiz-options" class="quiz-options">
+                <!-- Nút đáp án sẽ được tạo bằng JS -->
+            </div>
+            <button id="quiz-next" class="hidden" style="width: 100%; margin-top: 15px;">Câu tiếp theo ➡</button>
+        </div>
 
-        // Sự kiện Đăng xuất
-        logoutBtn.addEventListener("click", () => {
-            signOut(auth);
-        });
+        <!-- Tab 4: Ghép thẻ (Match) -->
+        <div id="tab-match" class="tab-content hidden">
+            <p style="text-align: center; margin-top: 0;">Chọn cặp Tiếng Anh - Tiếng Việt tương ứng</p>
+            <div id="match-grid" class="match-grid"></div>
+            <button id="match-restart" style="width: 100%; margin-top: 15px;">Chơi lại</button>
+        </div>
+    </div>
+</div>
 
-        // Theo dõi trạng thái tài khoản đăng nhập
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginSection.classList.add("hidden");
-                appSection.classList.remove("hidden");
-                userGreeting.innerText = `Chào mừng, ${user.displayName}!`;
-                loadMockCard(); // Tải thử thẻ học mẫu
-            } else {
-                loginSection.classList.remove("hidden");
-                appSection.classList.add("hidden");
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Cấu hình Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDIIFo2JMolCY5Ygxdy992z2kyBgXF2L0M",
+        authDomain: "applearningenglish-4c758.firebaseapp.com",
+        projectId: "applearningenglish-4c758",
+        storageBucket: "applearningenglish-4c758.firebasestorage.app",
+        messagingSenderId: "947321154941",
+        appId: "1:947321154941:web:27941cb908044dd23d3014",
+        measurementId: "G-H263DSZSL3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    let currentUser = null;
+    let vocabularyList = []; // Mảng chứa từ vựng [{en: "apple", vi: "quả táo"}]
+
+    // Auth logic
+    document.getElementById("login-btn").onclick = () => signInWithPopup(auth, provider);
+    document.getElementById("logout-btn").onclick = () => signOut(auth);
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
+            document.getElementById("login-section").classList.add("hidden");
+            document.getElementById("app-section").classList.remove("hidden");
+            document.getElementById("user-greeting").innerText = `👋 ${user.displayName}`;
+            await loadVocabulary(); // Tải từ vựng từ Database
+        } else {
+            currentUser = null;
+            document.getElementById("login-section").classList.remove("hidden");
+            document.getElementById("app-section").classList.add("hidden");
+        }
+    });
+
+    // Chuyển Tab UI
+    window.switchTab = function(tabName) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        event.target.classList.add('active');
+
+        if(tabName === 'flashcard') initFlashcard();
+        if(tabName === 'quiz') initQuiz();
+        if(tabName === 'match') initMatch();
+    };
+
+    // TAB 1: NHẬP LIỆU & LƯU LÊN FIRESTORE
+    async function loadVocabulary() {
+        if(!currentUser) return;
+        const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+        if (docSnap.exists() && docSnap.data().words) {
+            vocabularyList = docSnap.data().words;
+            updateImportUI();
+        }
+    }
+
+    document.getElementById("save-words-btn").onclick = async () => {
+        const text = document.getElementById("import-text").value;
+        const lines = text.split('\n');
+        
+        lines.forEach(line => {
+            // Tách bằng dấu '-', ',', '=' hoặc ':'
+            let parts = line.split(/[-,=:]/);
+            if(parts.length >= 2) {
+                let en = parts[0].trim();
+                let vi = parts[1].trim();
+                if(en && vi && !vocabularyList.some(w => w.en.toLowerCase() === en.toLowerCase())) {
+                    vocabularyList.push({en, vi});
+                }
             }
         });
 
-        // Hàm mô phỏng hiển thị thẻ điền từ (Cloze Deletion)
-        function loadMockCard() {
-            const rawSentence = "I want to improve my {{c1::english}} vocabulary.";
-            let originalWord = "";
+        if(vocabularyList.length > 0) {
+            await setDoc(doc(db, "users", currentUser.uid), { words: vocabularyList });
+            alert("Đã lưu từ vựng thành công lên đám mây!");
+            updateImportUI();
+            document.getElementById("import-text").value = "";
+        }
+    };
+
+    function updateImportUI() {
+        document.getElementById("word-count").innerText = `Kho từ vựng hiện tại: ${vocabularyList.length} từ`;
+    }
+
+    // TAB 2: FLASHCARD
+    let fcIndex = 0;
+    let isFlipped = false;
+    const fcCard = document.getElementById("fc-card");
+    const fcCounter = document.getElementById("fc-counter");
+
+    function initFlashcard() {
+        if(vocabularyList.length === 0) { fcCard.innerText = "Hãy nhập từ vựng trước!"; return; }
+        fcIndex = 0;
+        showFlashcard();
+    }
+
+    function showFlashcard() {
+        isFlipped = false;
+        fcCard.classList.remove('flipped');
+        fcCard.innerText = vocabularyList[fcIndex].en;
+        fcCounter.innerText = `${fcIndex + 1} / ${vocabularyList.length}`;
+    }
+
+    fcCard.onclick = () => {
+        if(vocabularyList.length === 0) return;
+        isFlipped = !isFlipped;
+        fcCard.classList.toggle('flipped');
+        fcCard.innerText = isFlipped ? vocabularyList[fcIndex].vi : vocabularyList[fcIndex].en;
+    };
+
+    document.getElementById("fc-prev").onclick = () => { if(fcIndex > 0) { fcIndex--; showFlashcard(); } };
+    document.getElementById("fc-next").onclick = () => { if(fcIndex < vocabularyList.length - 1) { fcIndex++; showFlashcard(); } };
+
+    // TAB 3: TRẮC NGHIỆM (QUIZ)
+    function initQuiz() {
+        if(vocabularyList.length < 4) {
+            document.getElementById("quiz-word").innerText = "Cần ít nhất 4 từ vựng để tạo trắc nghiệm!";
+            document.getElementById("quiz-options").innerHTML = "";
+            return;
+        }
+        
+        let correctWord = vocabularyList[Math.floor(Math.random() * vocabularyList.length)];
+        document.getElementById("quiz-word").innerText = correctWord.en;
+        
+        // Tạo 3 đáp án sai ngẫu nhiên
+        let options = [correctWord];
+        while(options.length < 4) {
+            let randomWord = vocabularyList[Math.floor(Math.random() * vocabularyList.length)];
+            if(!options.includes(randomWord)) options.push(randomWord);
+        }
+        options.sort(() => Math.random() - 0.5); // Trộn đáp án
+
+        const optionsDiv = document.getElementById("quiz-options");
+        optionsDiv.innerHTML = "";
+        document.getElementById("quiz-next").classList.add("hidden");
+
+        options.forEach(opt => {
+            let btn = document.createElement("button");
+            btn.className = "quiz-btn";
+            btn.innerText = opt.vi;
+            btn.onclick = () => handleQuizClick(btn, opt === correctWord);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function handleQuizClick(btn, isCorrect) {
+        document.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true); // Khóa nút
+        if(isCorrect) {
+            btn.classList.add("correct");
+        } else {
+            btn.classList.add("wrong");
+        }
+        document.getElementById("quiz-next").classList.remove("hidden");
+    }
+    document.getElementById("quiz-next").onclick = initQuiz;
+
+    // TAB 4: GHÉP THẺ (MATCH GAME)
+    let selectedMatchCard = null;
+    
+    function initMatch() {
+        if(vocabularyList.length < 2) {
+            document.getElementById("match-grid").innerHTML = "<p style='grid-column: span 2; text-align:center;'>Cần ít nhất 2 từ!</p>";
+            return;
+        }
+
+        // Lấy ngẫu nhiên 4 từ để chơi
+        let gameWords = [...vocabularyList].sort(() => Math.random() - 0.5).slice(0, 4);
+        let cards = [];
+        gameWords.forEach(w => {
+            cards.push({ text: w.en, pairId: w.en, type: 'en' });
+            cards.push({ text: w.vi, pairId: w.en, type: 'vi' });
+        });
+        cards.sort(() => Math.random() - 0.5); // Trộn lộn xộn
+
+        const grid = document.getElementById("match-grid");
+        grid.innerHTML = "";
+        selectedMatchCard = null;
+
+        cards.forEach(card => {
+            let div = document.createElement("div");
+            div.className = "match-card";
+            div.innerText = card.text;
+            div.dataset.pairId = card.pairId;
             
-            const htmlContent = rawSentence.replace(/{{c1::(.*?)}}/g, (match, p1) => {
-                originalWord = p1;
-                return `<br><br><input type="text" id="user-input" placeholder="Điền từ..." autocomplete="off">`;
-            });
-
-            document.getElementById("card-front").innerHTML = htmlContent;
-            document.getElementById("card-back").classList.add("hidden");
-            checkBtn.innerText = "Kiểm tra";
-
-            checkBtn.onclick = () => {
-                const userVal = document.getElementById("user-input").value.trim().toLowerCase();
-                const backDiv = document.getElementById("card-back");
-                const ansText = document.getElementById("card-answer");
+            div.onclick = () => {
+                if(div.classList.contains('matched') || div.classList.contains('selected')) return;
                 
-                backDiv.classList.remove("hidden");
-                if (userVal === originalWord.toLowerCase()) {
-                    ansText.innerText = "Chính xác! 🎉";
-                    ansText.style.color = "green";
+                div.classList.add('selected');
+
+                if(!selectedMatchCard) {
+                    selectedMatchCard = div;
                 } else {
-                    ansText.innerText = `Chưa đúng. Đáp án là: ${originalWord}`;
-                    ansText.style.color = "red";
+                    // Kiểm tra đúng cặp
+                    if(selectedMatchCard.dataset.pairId === div.dataset.pairId && selectedMatchCard !== div) {
+                        setTimeout(() => {
+                            div.classList.add('matched');
+                            selectedMatchCard.classList.add('matched');
+                            selectedMatchCard = null;
+                        }, 300);
+                    } else {
+                        div.classList.add('wrong');
+                        selectedMatchCard.classList.add('wrong');
+                        let temp = selectedMatchCard;
+                        selectedMatchCard = null;
+                        setTimeout(() => {
+                            div.classList.remove('selected', 'wrong');
+                            temp.classList.remove('selected', 'wrong');
+                        }, 500);
+                    }
                 }
             };
-        }
-    </script>
+            grid.appendChild(div);
+        });
+    }
+    document.getElementById("match-restart").onclick = initMatch;
+</script>
+
 </body>
 </html>
