@@ -9,6 +9,9 @@
     
     <title>App Học Tiếng Anh V3.0</title>
     
+    <!-- 👇 Thêm dòng liên kết manifest vào đây để PWABuilder nhận diện -->
+    <link rel="manifest" href="manifest.json">
+    
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     
     <style>
@@ -182,14 +185,14 @@
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
-            vocabularyList = []; // Xóa sạch dữ liệu cũ khi đăng nhập tài khoản mới
+            vocabularyList = []; 
             document.getElementById("login-section").classList.add("hidden");
             document.getElementById("app-section").classList.remove("hidden");
             document.getElementById("user-greeting").innerText = user.displayName.split(" ")[0];
             await loadVocabulary();
         } else {
             currentUser = null;
-            vocabularyList = []; // Xóa sạch dữ liệu khi đăng xuất
+            vocabularyList = []; 
             document.getElementById("login-section").classList.remove("hidden");
             document.getElementById("app-section").classList.add("hidden");
         }
@@ -209,7 +212,7 @@
 
     async function loadVocabulary() {
         if(!currentUser) return;
-        vocabularyList = []; // Đảm bảo reset mảng trước khi tải từ Firestore
+        vocabularyList = []; 
         try {
             const docSnap = await getDoc(doc(db, "users", currentUser.uid));
             if (docSnap.exists() && docSnap.data().words) {
