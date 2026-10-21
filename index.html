@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Chống lưu cache -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
-    <title>App Học Tiếng Anh V3.0 - Duolingo Style</title>
+    <title>App Học Tiếng Anh V3.0</title>
     
-    <!-- Font chữ bo tròn giống Duolingo -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     
     <style>
@@ -19,7 +17,6 @@
         h2 { text-align: center; color: #58CC02; font-weight: 900; font-size: 28px; margin-bottom: 5px; }
         .subtitle { text-align: center; color: #AFAFAF; font-weight: 700; margin-top: 0; margin-bottom: 20px; }
         
-        /* 3D Button Style (Duolingo) */
         button { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; border: none; border-radius: 16px; cursor: pointer; transition: 0.1s; width: 100%; padding: 15px; }
         .btn-primary { background-color: #58CC02; color: white; border-bottom: 4px solid #58A700; }
         .btn-primary:active { transform: translateY(4px); border-bottom: 0px solid #58A700; margin-bottom: 4px; }
@@ -28,17 +25,14 @@
         
         .hidden { display: none !important; }
         
-        /* Nav Tabs */
         .tabs { display: flex; justify-content: space-between; background: #F7F9F9; border-radius: 16px; padding: 5px; margin-bottom: 20px; }
         .tab-btn { background: transparent; color: #AFAFAF; border-bottom: none; border-radius: 12px; padding: 10px 5px; font-size: 12px; width: 24%; }
         .tab-btn:active { transform: none; }
         .tab-btn.active { background: #DDf4C5; color: #58CC02; }
 
-        /* Inputs */
         textarea, input[type="text"] { width: 100%; font-family: 'Nunito', sans-serif; padding: 15px; font-size: 16px; font-weight: 700; box-sizing: border-box; border: 2px solid #E5E5E5; border-radius: 16px; margin-bottom: 15px; background: #F7F9F9; color: #4B4B4B; outline: none; transition: 0.2s; }
         textarea:focus, input[type="text"]:focus { border-color: #1CB0F6; background: #fff; }
 
-        /* Flashcard */
         .flashcard-container { perspective: 1000px; margin-bottom: 20px; }
         .flashcard { width: 100%; height: 250px; background: #fff; border: 2px solid #E5E5E5; border-bottom: 6px solid #E5E5E5; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; cursor: pointer; transition: transform 0.4s; position: relative; color: #4B4B4B; text-align: center; padding: 20px; box-sizing: border-box; }
         .flashcard:active { transform: scale(0.95); border-bottom-width: 2px; margin-top: 4px; }
@@ -49,26 +43,22 @@
         .btn-small { width: 30%; padding: 10px; font-size: 14px; background: #E5E5E5; color: #AFAFAF; border-bottom: 4px solid #CECECE; }
         .btn-small:active { transform: translateY(4px); border-bottom: 0; margin-bottom: 4px; }
 
-        /* Quiz Options */
         .quiz-word { font-size: 28px; font-weight: 900; text-align: center; margin-bottom: 20px; color: #1CB0F6; }
         .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .quiz-btn { background: #fff; color: #4B4B4B; border: 2px solid #E5E5E5; border-bottom: 4px solid #E5E5E5; font-size: 18px; padding: 20px 10px; text-transform: none; }
         .quiz-btn.correct { background: #DDf4C5; color: #58CC02; border-color: #58CC02; border-bottom-color: #58A700; }
         .quiz-btn.wrong { background: #FFDFE0; color: #FF4B4B; border-color: #FF4B4B; border-bottom-color: #EA2B2B; }
 
-        /* Match Game */
         .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .match-card { background: #fff; border: 2px solid #E5E5E5; border-bottom: 4px solid #E5E5E5; padding: 15px; text-align: center; border-radius: 16px; cursor: pointer; font-weight: 800; color: #4B4B4B; user-select: none; transition: 0.1s; }
         .match-card:active { transform: translateY(2px); border-bottom-width: 2px; }
         .match-card.selected { border-color: #1CB0F6; border-bottom-color: #1899D6; background: #DDF4FF; color: #1CB0F6; }
         .match-card.matched { visibility: hidden; opacity: 0; transition: 0.3s; }
         
-        /* Mascot Feedback Animation */
-        #mascot-feedback { text-align: center; font-size: 20px; font-weight: 900; margin-top: 15px; height: 30px; transition: 0.3s; }
+        .mascot-feedback { text-align: center; font-size: 20px; font-weight: 900; margin-top: 15px; height: 30px; }
         .text-correct { color: #58CC02; }
         .text-wrong { color: #FF4B4B; }
 
-        /* Animations */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-8px) rotate(-2deg); }
@@ -88,22 +78,18 @@
 <body>
 
 <div class="container">
-    <!-- Khu vực đăng nhập -->
     <div id="login-section">
         <h2>Tiếng Anh V3.0</h2>
         <p class="subtitle">Học vui như chơi Game! 🦉</p>
-        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/student-owl-3d-icon-download-in-png-blend-fbx-gltf-formats--education-bird-learning-school-pack-animals-icons-7734898.png?f=webp" alt="Owl" style="width: 150px; display: block; margin: 0 auto 20px;">
         <button id="login-btn" class="btn-primary">Đăng nhập bằng Google</button>
     </div>
 
-    <!-- Khu vực App -->
     <div id="app-section" class="hidden">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <div style="font-weight: 800; color: #AFAFAF; font-size: 18px;">👤 <span id="user-greeting"></span></div>
             <button id="logout-btn" class="btn-danger" style="width: auto; padding: 8px 15px; font-size: 12px; border-radius: 12px;">Thoát</button>
         </div>
 
-        <!-- Thanh điều hướng Tab -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('import')">📥<br>Nhập Từ</button>
             <button class="tab-btn" onclick="switchTab('flashcard')">🗂️<br>Thẻ Bài</button>
@@ -112,19 +98,17 @@
             <button class="tab-btn" onclick="switchTab('match')">🧩<br>Ghép Từ</button>
         </div>
 
-        <!-- Tab 1: Nhập liệu -->
         <div id="tab-import" class="tab-content">
-            <p style="font-weight: 700; color:#4B4B4B;">Dán từ vựng (Tiếng Anh - Tiếng Việt)</p>
-            <textarea id="import-text" placeholder="Ví dụ:&#10;Apple - Quả táo&#10;Run - Chạy"></textarea>
+            <p style="font-weight: 700; color:#4B4B4B;">Dán từ vựng (Ví dụ: Apple - Quả táo)</p>
+            <textarea id="import-text" placeholder="Apple - Quả táo&#10;Run - Chạy"></textarea>
             <div id="word-count" style="font-weight: 900; color: #1CB0F6; margin-bottom: 15px; text-align: center;">Kho: 0 từ vựng</div>
             <button id="save-words-btn" class="btn-primary">Lưu Lên Đám Mây ☁️</button>
         </div>
 
-        <!-- Tab 2: Flashcard -->
         <div id="tab-flashcard" class="tab-content hidden">
             <div class="flashcard-container">
                 <div id="fc-card" class="flashcard">
-                    <span id="fc-text">Nhập từ đi!</span>
+                    <span id="fc-text">Chưa có từ!</span>
                     <div id="fc-speaker" class="speaker-icon hidden">🔊</div>
                 </div>
             </div>
@@ -135,42 +119,37 @@
             </div>
         </div>
 
-        <!-- Tab 3: Trắc nghiệm (Quiz) -->
         <div id="tab-quiz" class="tab-content hidden">
             <p class="subtitle">Chọn nghĩa đúng của từ này:</p>
             <div id="quiz-word" class="quiz-word">...</div>
             <div id="quiz-options" class="quiz-options"></div>
-            <div id="mascot-feedback-quiz" id="mascot-feedback"></div>
+            <div id="mascot-feedback-quiz" class="mascot-feedback"></div>
             <button id="quiz-next" class="btn-primary hidden" style="margin-top: 15px;">TIẾP TỤC ➡</button>
         </div>
 
-        <!-- Tab 4: Gõ Từ (Spelling Game - MỚI) -->
         <div id="tab-spell" class="tab-content hidden">
             <p class="subtitle" id="spell-hint">Nghe và gõ lại từ tiếng Anh:</p>
             <div id="spell-vi" style="font-size: 24px; font-weight: 900; text-align: center; color: #58CC02; margin-bottom: 10px;">...</div>
             <button id="spell-listen-btn" class="btn-small" style="width: 100%; margin-bottom: 15px; color: #1CB0F6; border-color: #1CB0F6;">🔊 Nghe lại</button>
             <input type="text" id="spell-input" placeholder="Gõ tiếng Anh vào đây..." autocomplete="off">
-            <div id="mascot-feedback-spell" id="mascot-feedback"></div>
+            <div id="mascot-feedback-spell" class="mascot-feedback"></div>
             <button id="spell-check-btn" class="btn-primary" style="margin-top: 5px;">KIỂM TRA</button>
         </div>
 
-        <!-- Tab 5: Ghép thẻ (Match) -->
         <div id="tab-match" class="tab-content hidden">
             <p class="subtitle">Chạm vào các cặp từ tương ứng</p>
             <div id="match-grid" class="match-grid"></div>
-            <div id="mascot-feedback-match" id="mascot-feedback" style="margin-top: 20px;"></div>
+            <div id="mascot-feedback-match" class="mascot-feedback" style="margin-top: 20px;"></div>
             <button id="match-restart" class="btn-primary hidden" style="margin-top: 15px;">CHƠI LẠI 🔄</button>
         </div>
     </div>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Cấu hình Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDIIFo2JMolCY5Ygxdy992z2kyBgXF2L0M",
         authDomain: "applearningenglish-4c758.firebaseapp.com",
@@ -188,55 +167,58 @@
     let currentUser = null;
     let vocabularyList = [];
 
-    // ============ HÀM PHÁT ÂM (Web Speech API) ============
     function playAudio(text) {
         if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
         let utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US'; // Giọng Mỹ
-        utterance.rate = 0.9; // Đọc chậm một chút cho dễ nghe
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
     }
 
-    // ============ XỬ LÝ ĐĂNG NHẬP ============
     document.getElementById("login-btn").onclick = () => signInWithPopup(auth, provider);
     document.getElementById("logout-btn").onclick = () => signOut(auth);
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
+            vocabularyList = []; // Xóa sạch dữ liệu cũ khi đăng nhập tài khoản mới
             document.getElementById("login-section").classList.add("hidden");
             document.getElementById("app-section").classList.remove("hidden");
             document.getElementById("user-greeting").innerText = user.displayName.split(" ")[0];
             await loadVocabulary();
         } else {
             currentUser = null;
+            vocabularyList = []; // Xóa sạch dữ liệu khi đăng xuất
             document.getElementById("login-section").classList.remove("hidden");
             document.getElementById("app-section").classList.add("hidden");
         }
     });
 
-    // ============ CHUYỂN TAB ============
     window.switchTab = function(tabName) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(`tab-${tabName}`).classList.remove('hidden');
         event.currentTarget.classList.add('active');
 
-        // Khởi tạo lại tính năng khi bấm tab
         if(tabName === 'flashcard') initFlashcard();
         if(tabName === 'quiz') initQuiz();
         if(tabName === 'spell') initSpell();
         if(tabName === 'match') initMatch();
     };
 
-    // ============ TAB 1: NHẬP TỪ ============
     async function loadVocabulary() {
         if(!currentUser) return;
-        const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-        if (docSnap.exists() && docSnap.data().words) {
-            vocabularyList = docSnap.data().words;
+        vocabularyList = []; // Đảm bảo reset mảng trước khi tải từ Firestore
+        try {
+            const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+            if (docSnap.exists() && docSnap.data().words) {
+                vocabularyList = docSnap.data().words;
+            }
             document.getElementById("word-count").innerText = `Kho: ${vocabularyList.length} từ vựng`;
+        } catch (error) {
+            console.error("Lỗi tải dữ liệu:", error);
+            document.getElementById("word-count").innerText = `Kho: 0 từ vựng`;
         }
     }
 
@@ -258,16 +240,22 @@
 
         if(vocabularyList.length > 0) {
             btn.innerText = "Đang lưu...";
-            await setDoc(doc(db, "users", currentUser.uid), { words: vocabularyList });
-            btn.innerText = "Lưu thành công! 🎉";
-            btn.classList.add('pop');
-            document.getElementById("word-count").innerText = `Kho: ${vocabularyList.length} từ vựng`;
-            document.getElementById("import-text").value = "";
-            setTimeout(() => { btn.innerText = "Lưu Lên Đám Mây ☁️"; btn.classList.remove('pop'); }, 2000);
+            try {
+                await setDoc(doc(db, "users", currentUser.uid), { words: vocabularyList });
+                btn.innerText = "Lưu thành công! 🎉";
+                btn.classList.add('pop');
+                document.getElementById("word-count").innerText = `Kho: ${vocabularyList.length} từ vựng`;
+                document.getElementById("import-text").value = "";
+                setTimeout(() => { btn.innerText = "Lưu Lên Đám Mây ☁️"; btn.classList.remove('pop'); }, 2000);
+            } catch (error) {
+                alert("Lỗi lưu đám mây: " + error.message);
+                btn.innerText = "Lưu Lên Đám Mây ☁️";
+            }
+        } else {
+            alert("Vui lòng nhập đúng định dạng (Ví dụ: Apple - Quả táo)");
         }
     };
 
-    // ============ TAB 2: FLASHCARD ============
     let fcIndex = 0;
     let isFlipped = false;
     const fcCard = document.getElementById("fc-card");
@@ -275,7 +263,12 @@
     const fcSpeaker = document.getElementById("fc-speaker");
 
     function initFlashcard() {
-        if(vocabularyList.length === 0) return;
+        if(vocabularyList.length === 0) {
+            fcText.innerText = "Chưa có từ! Hãy qua tab Nhập Từ.";
+            fcSpeaker.classList.add('hidden');
+            document.getElementById("fc-counter").innerText = `0/0`;
+            return;
+        }
         fcIndex = 0;
         showFlashcard();
     }
@@ -286,7 +279,7 @@
         fcText.innerText = vocabularyList[fcIndex].en;
         fcSpeaker.classList.remove('hidden');
         document.getElementById("fc-counter").innerText = `${fcIndex + 1}/${vocabularyList.length}`;
-        playAudio(vocabularyList[fcIndex].en); // Tự động đọc
+        playAudio(vocabularyList[fcIndex].en);
     }
 
     fcCard.onclick = () => {
@@ -306,17 +299,17 @@
     document.getElementById("fc-prev").onclick = () => { if(fcIndex > 0) { fcIndex--; showFlashcard(); } };
     document.getElementById("fc-next").onclick = () => { if(fcIndex < vocabularyList.length - 1) { fcIndex++; showFlashcard(); } };
 
-    // ============ TAB 3: TRẮC NGHIỆM ============
     let currentQuizWord = null;
     function initQuiz() {
         if(vocabularyList.length < 4) {
-            document.getElementById("quiz-word").innerText = "Cần nhập thêm từ! (Tối thiểu 4 từ)";
+            document.getElementById("quiz-word").innerText = "Cần ít nhất 4 từ vựng để chơi trắc nghiệm!";
+            document.getElementById("quiz-options").innerHTML = "";
             return;
         }
         document.getElementById("mascot-feedback-quiz").innerHTML = "";
         currentQuizWord = vocabularyList[Math.floor(Math.random() * vocabularyList.length)];
         document.getElementById("quiz-word").innerText = currentQuizWord.en;
-        playAudio(currentQuizWord.en); // Đọc từ vựng
+        playAudio(currentQuizWord.en);
         
         let options = [currentQuizWord];
         while(options.length < 4) {
@@ -341,7 +334,6 @@
                     playAudio("Correct!");
                 } else {
                     btn.classList.add("wrong", "shake");
-                    // Tìm và tô xanh đáp án đúng
                     document.querySelectorAll('.quiz-btn').forEach(b => {
                         if(b.innerText === currentQuizWord.vi) b.classList.add("correct");
                     });
@@ -354,14 +346,23 @@
     }
     document.getElementById("quiz-next").onclick = initQuiz;
 
-    // ============ TAB 4: GÕ TỪ (SPELL GAME) ============
     let currentSpellWord = null;
     function initSpell() {
-        if(vocabularyList.length === 0) return;
+        if(vocabularyList.length === 0) {
+            document.getElementById("spell-vi").innerText = "Chưa có từ vựng để luyện gõ!";
+            document.getElementById("spell-input").classList.add("hidden");
+            document.getElementById("spell-check-btn").classList.add("hidden");
+            document.getElementById("spell-listen-btn").classList.add("hidden");
+            return;
+        }
         document.getElementById("mascot-feedback-spell").innerHTML = "";
         document.getElementById("spell-input").value = "";
         document.getElementById("spell-input").disabled = false;
+        
+        document.getElementById("spell-input").classList.remove("hidden");
         document.getElementById("spell-check-btn").classList.remove("hidden");
+        document.getElementById("spell-listen-btn").classList.remove("hidden");
+        
         document.getElementById("spell-check-btn").innerText = "KIỂM TRA";
         document.getElementById("spell-check-btn").onclick = checkSpell;
         
@@ -379,6 +380,8 @@
         let btn = document.getElementById("spell-check-btn");
         let inputField = document.getElementById("spell-input");
 
+        if(!userInput) return;
+
         if(userInput === targetWord) {
             feedback.innerHTML = "<span class='text-correct pop'>🎉 Chuẩn không cần chỉnh!</span>";
             inputField.disabled = true;
@@ -393,7 +396,6 @@
         }
     }
 
-    // Bắt sự kiện Enter khi gõ
     document.getElementById("spell-input").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -401,12 +403,14 @@
         }
     });
 
-    // ============ TAB 5: GHÉP THẺ (MATCH GAME) ============
     let selectedMatchCard = null;
     let matchedPairs = 0;
     
     function initMatch() {
-        if(vocabularyList.length < 2) return;
+        if(vocabularyList.length < 2) {
+            document.getElementById("match-grid").innerHTML = "<p style='grid-column: span 2; text-align:center;'>Cần ít nhất 2 từ vựng để chơi ghép thẻ!</p>";
+            return;
+        }
         document.getElementById("match-restart").classList.add("hidden");
         document.getElementById("mascot-feedback-match").innerHTML = "";
         matchedPairs = 0;
@@ -425,7 +429,7 @@
 
         cards.forEach(card => {
             let div = document.createElement("div");
-            div.className = "match-card pop"; // Hiện nảy lên khi tạo
+            div.className = "match-card pop";
             div.innerText = card.text;
             div.dataset.pairId = card.pairId;
             div.dataset.type = card.type;
@@ -433,7 +437,6 @@
             div.onclick = () => {
                 if(div.classList.contains('matched') || div.classList.contains('selected')) return;
                 
-                // Đọc tiếng Anh nếu bấm vào thẻ tiếng Anh
                 if(div.dataset.type === 'en') playAudio(div.innerText);
 
                 div.classList.add('selected');
@@ -442,7 +445,6 @@
                     selectedMatchCard = div;
                 } else {
                     if(selectedMatchCard.dataset.pairId === div.dataset.pairId && selectedMatchCard !== div) {
-                        // Đúng
                         let c1 = selectedMatchCard, c2 = div;
                         setTimeout(() => {
                             c1.classList.add('matched');
@@ -455,7 +457,6 @@
                         }, 200);
                         selectedMatchCard = null;
                     } else {
-                        // Sai
                         div.classList.add('wrong', 'shake');
                         selectedMatchCard.classList.add('wrong', 'shake');
                         let temp = selectedMatchCard;
