@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duolingo English - Lộ Trình 500+ Từ Vựng</title>
+    <title>Duolingo English - Dữ Liệu Tự Động Firebase</title>
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -25,10 +25,13 @@
         /* CỘT GIỮA: LỘ TRÌNH (SKILL TREE) */
         .main-content { margin-left: 256px; margin-right: 368px; flex-grow: 1; padding: 20px 30px; display: flex; flex-direction: column; align-items: center; }
         
-        .path-banner { width: 100%; max-width: 420px; background: #58CC02; border-radius: 20px; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 0 #46A302; margin-bottom: 35px; }
+        .path-banner { width: 100%; max-width: 420px; background: #58CC02; border-radius: 20px; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 0 #46A302; margin-bottom: 25px; }
         .banner-info h4 { margin: 0 0 5px 0; font-size: 12px; text-transform: uppercase; font-weight: 800; opacity: 0.9; }
         .banner-info h2 { margin: 0; font-size: 20px; font-weight: 900; }
         .btn-guide { background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); padding: 8px 14px; border-radius: 12px; color: white; font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; }
+
+        .btn-seed { background: #1CB0F6; color: white; border: none; border-bottom: 4px solid #1899D6; padding: 12px 20px; border-radius: 16px; font-weight: 900; font-size: 14px; cursor: pointer; width: 100%; max-width: 420px; margin-bottom: 25px; text-transform: uppercase; }
+        .btn-seed:active { transform: translateY(2px); border-bottom-width: 2px; }
 
         .skill-tree { display: flex; flex-direction: column; align-items: center; gap: 25px; width: 100%; position: relative; padding-bottom: 50px; }
         
@@ -53,10 +56,6 @@
         
         .super-card { background: #9400D3; color: white; border: none; border-bottom: 6px solid #6A0DAD; }
         .btn-super { background: white; color: #9400D3; width: 100%; border: none; padding: 12px; border-radius: 14px; font-weight: 900; margin-top: 15px; cursor: pointer; text-transform: uppercase; }
-
-        .quest-item { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-        .progress-bar-sm { flex-grow: 1; height: 10px; background: #E5E5E5; border-radius: 5px; overflow: hidden; }
-        .progress-fill-sm { width: 40%; height: 100%; background: #FFC800; border-radius: 5px; }
 
         /* MÀN HÌNH BÀI HỌC */
         .lesson-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 100; display: flex; flex-direction: column; padding: 20px; }
@@ -94,7 +93,7 @@
         
         <div id="login-screen" style="text-align:center; margin-top: 150px; width: 100%;">
             <h1 style="color:#58CC02; font-size:36px; font-weight:900;">Chào mừng đến với Duolingo Từ Vựng!</h1>
-            <p style="color:#777; font-weight:700; margin-bottom:25px;">Học 500+ từ vựng theo chủ đề vui nhộn và miễn phí.</p>
+            <p style="color:#777; font-weight:700; margin-bottom:25px;">Học từ vựng theo chủ đề vui nhộn, mượt mà và không giới hạn.</p>
             <button id="login-btn" style="background:#58CC02; color:white; border:none; padding:16px 30px; font-size:16px; font-weight:900; border-radius:16px; border-bottom:4px solid #46A302; cursor:pointer;">ĐĂNG NHẬP BẰNG GOOGLE</button>
         </div>
 
@@ -103,14 +102,17 @@
             <div class="path-banner">
                 <div class="banner-info">
                     <h4 id="banner-section-title">Chủ đề 1</h4>
-                    <h2 id="banner-unit-title">Gia đình và mối quan hệ</h2>
+                    <h2 id="banner-unit-title">Đang tải dữ liệu...</h2>
                 </div>
                 <button class="btn-guide" onclick="alert('Hãy chọn bài học trên cây kỹ năng để bắt đầu!')">Hướng dẫn</button>
             </div>
 
-            <!-- Cây kỹ năng (Skill Tree tích hợp dữ liệu chủ đề thực tế) -->
+            <!-- Nút bấm tự động nạp dữ liệu lên Firebase -->
+            <button class="btn-seed" onclick="seedDatabase()">🚀 Tự động nạp dữ liệu lên Firebase</button>
+
+            <!-- Cây kỹ năng (Skill Tree lấy từ Firebase) -->
             <div class="skill-tree" id="skill-tree-nodes">
-                <!-- Các nút bài học sẽ được render tự động bằng JS -->
+                <!-- Render tự động -->
             </div>
 
         </div>
@@ -133,11 +135,11 @@
 
         <div class="widget-card">
             <h3>Nhiệm vụ hằng ngày</h3>
-            <div class="quest-item">
+            <div class="quest-item" style="display:flex; align-items:center; gap:12px; margin-top:10px;">
                 <span style="font-size: 20px;">⚡</span>
                 <div style="flex-grow: 1;">
                     <div style="font-weight: 800; font-size: 13px;">Kiếm 20 XP</div>
-                    <div class="progress-bar-sm"><div class="progress-fill-sm"></div></div>
+                    <div style="width:100%; height:100px; background:#E5E5E5; border-radius:5px; height:10px; overflow:hidden;"><div style="width:40%; height:100%; background:#FFC800;"></div></div>
                 </div>
             </div>
         </div>
@@ -169,7 +171,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDIIFo2JMolCY5Ygxdy992z2kyBgXF2L0M",
@@ -188,9 +190,10 @@
     let currentUser = null;
     let userXP = 0;
     let userStreak = 1;
+    let topicsData = [];
 
-    // DỮ LIỆU TỪ VỰNG THEO CHỦ ĐỀ (Được trích xuất từ nội dung bạn cung cấp)
-    const topicsData = [
+    // Dữ liệu mẫu để tự động bơm lên Firebase
+    const defaultSeedTopics = [
         {
             id: 1, title: "Gia đình và mối quan hệ", icon: "👨‍👩‍👧‍👦",
             words: [
@@ -238,6 +241,19 @@
         }
     ];
 
+    // Hàm tự động nạp dữ liệu lên Firestore
+    window.seedDatabase = async function() {
+        try {
+            for (let topic of defaultSeedTopics) {
+                await setDoc(doc(db, "topics", `topic_${topic.id}`), topic);
+            }
+            alert("Nạp dữ liệu tự động lên Firebase thành công! 🎉 Hãy bấm OK để tải lại lộ trình.");
+            loadTopicsFromFirebase();
+        } catch (error) {
+            alert("Lỗi khi nạp dữ liệu: " + error.message);
+        }
+    };
+
     document.getElementById("login-btn").onclick = () => signInWithPopup(auth, provider);
     document.getElementById("logout-btn").onclick = () => signOut(auth);
 
@@ -247,7 +263,7 @@
             document.getElementById("login-screen").classList.add("hidden");
             document.getElementById("dashboard-screen").classList.remove("hidden");
             await loadUserData();
-            renderSkillTree();
+            await loadTopicsFromFirebase();
         } else {
             currentUser = null;
             document.getElementById("login-screen").classList.remove("hidden");
@@ -282,10 +298,34 @@
         document.getElementById("stat-streak").innerText = userStreak;
     }
 
-    // Render cây kỹ năng Zic-zac dựa trên dữ liệu từ vựng chủ đề
+    // Hàm tải dữ liệu động từ Firebase Firestore
+    async function loadTopicsFromFirebase() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "topics"));
+            topicsData = [];
+            querySnapshot.forEach((docSnap) => {
+                topicsData.push(docSnap.data());
+            });
+            topicsData.sort((a, b) => a.id - b.id);
+            
+            if(topicsData.length > 0) {
+                document.getElementById("banner-unit-title").innerText = topicsData[0].title;
+            }
+            renderSkillTree();
+        } catch (error) {
+            console.error("Lỗi tải từ Firebase:", error);
+        }
+    }
+
+    // Render cây kỹ năng Zic-zac
     function renderSkillTree() {
         const treeContainer = document.getElementById("skill-tree-nodes");
         treeContainer.innerHTML = "";
+
+        if(topicsData.length === 0) {
+            treeContainer.innerHTML = "<p style='color:#777; font-weight:700; text-align:center;'>Chưa có dữ liệu. Hãy bấm nút 'Nạp dữ liệu tự động' ở trên nhé!</p>";
+            return;
+        }
 
         topicsData.forEach((topic, index) => {
             let rowClass = "";
@@ -323,7 +363,6 @@
         document.getElementById("banner-section-title").innerText = `Chủ đề ${topic.id}`;
         document.getElementById("banner-unit-title").innerText = topic.title;
         
-        // Tạo câu hỏi từ danh sách từ vựng chủ đề
         currentQuestions = topic.words.map(w => {
             let wrongOptions = topic.words.filter(item => item.vi !== w.vi).map(item => item.vi);
             wrongOptions.sort(() => Math.random() - 0.5);
