@@ -192,365 +192,314 @@
     let userStreak = 1;
     let topicsData = [];
 
-    // Dữ liệu mẫu để tự động bơm lên Firebase
-   const defaultSeedTopics = [
-    {
-        id: 1,
-        title: "Gia đình và mối quan hệ",
-        icon: "👨‍👩‍👧‍👦",
-        words: [
-            {en: "Family", vi: "Gia đình"}, {en: "Parents", vi: "Bố mẹ"}, {en: "Siblings", vi: "Anh chị em ruột"},
-            {en: "Children", vi: "Con cái"}, {en: "Grandparents", vi: "Ông bà"}, {en: "Cousins", vi: "Anh chị em họ"},
-            {en: "Nephew", vi: "Cháu trai"}, {en: "Niece", vi: "Cháu gái"}, {en: "Aunt", vi: "Cô, dì"},
-            {en: "Uncle", vi: "Chú, bác"}, {en: "Spouse", vi: "Vợ, chồng"}, {en: "In-laws", vi: "Bố mẹ chồng, bố mẹ vợ"},
-            {en: "Brother-in-law", vi: "Anh rể, em chồng"}, {en: "Sister-in-law", vi: "Chị dâu, em vợ"},
-            {en: "Son", vi: "Con trai"}, {en: "Daughter", vi: "Con gái"}, {en: "Brother", vi: "Anh/em trai"},
-            {en: "Sister", vi: "Chị/em gái"}
-        ]
-    },
-    {
-        id: 2,
-        title: "Sở thích và giải trí",
-        icon: "🎨",
-        words: [
-            {en: "Hobby", vi: "Sở thích"}, {en: "Sports", vi: "Thể thao"}, {en: "Music", vi: "Âm nhạc"},
-            {en: "Reading", vi: "Đọc sách"}, {en: "Painting", vi: "Vẽ tranh"}, {en: "Photography", vi: "Nhiếp ảnh"},
-            {en: "Cooking", vi: "Nấu ăn"}, {en: "Gardening", vi: "Làm vườn"}, {en: "Traveling", vi: "Du lịch"},
-            {en: "Dancing", vi: "Nhảy múa"}, {en: "Gaming", vi: "Chơi game"}, {en: "Movies", vi: "Phim"},
-            {en: "Theatre", vi: "Nhà hát"}, {en: "Concert", vi: "Buổi hòa nhạc"}, {en: "Art", vi: "Nghệ thuật"},
-            {en: "Writing", vi: "Viết"}, {en: "Cycling", vi: "Đạp xe"}, {en: "Swimming", vi: "Bơi lội"},
-            {en: "Hiking", vi: "Leo núi"}, {en: "Yoga", vi: "Yoga"}
-        ]
-    },
-    {
-        id: 3,
-        title: "Thời tiết và mùa trong năm",
-        icon: "⛅",
-        words: [
-            {en: "Weather", vi: "Thời tiết"}, {en: "Temperature", vi: "Nhiệt độ"}, {en: "Sunny", vi: "Nắng"},
-            {en: "Cloudy", vi: "Mây"}, {en: "Rainy", vi: "Mưa"}, {en: "Snowy", vi: "Tuyết"},
-            {en: "Windy", vi: "Gió"}, {en: "Stormy", vi: "Bão"}, {en: "Foggy", vi: "Sương mù"},
-            {en: "Season", vi: "Mùa"}, {en: "Spring", vi: "Mùa xuân"}, {en: "Summer", vi: "Mùa hè"},
-            {en: "Autumn", vi: "Mùa thu"}, {en: "Winter", vi: "Mùa đông"}, {en: "January", vi: "Tháng một"},
-            {en: "February", vi: "Tháng hai"}, {en: "March", vi: "Tháng ba"}, {en: "April", vi: "Tháng tư"},
-            {en: "May", vi: "Tháng năm"}, {en: "June", vi: "Tháng sáu"}
-        ]
-    },
-    {
-        id: 4,
-        title: "Thành phố và địa điểm du lịch",
-        icon: "🏙️",
-        words: [
-            {en: "City", vi: "Thành phố"}, {en: "Town", vi: "Thị trấn"}, {en: "Capital", vi: "Thủ đô"},
-            {en: "Street", vi: "Đường"}, {en: "Avenue", vi: "Đại lộ"}, {en: "Square", vi: "Quảng trường"},
-            {en: "Park", vi: "Công viên"}, {en: "Museum", vi: "Bảo tàng"}, {en: "Gallery", vi: "Triển lãm"},
-            {en: "Landmark", vi: "Địa danh"}, {en: "Cathedral", vi: "Nhà thờ chính"}, {en: "Temple", vi: "Đền, chùa"},
-            {en: "Palace", vi: "Cung điện"}, {en: "Castle", vi: "Lâu đài"}, {en: "Bridge", vi: "Cầu"},
-            {en: "Beach", vi: "Bãi biển"}, {en: "Lake", vi: "Hồ"}, {en: "Mountain", vi: "Núi"},
-            {en: "Garden", vi: "Vườn"}, {en: "Zoo", vi: "Sở thú"}
-        ]
-    },
-    {
-        id: 5,
-        title: "Mua sắm và mặt hàng",
-        icon: "🛒",
-        words: [
-            {en: "Shopping", vi: "Mua sắm"}, {en: "Store", vi: "Cửa hàng"}, {en: "Market", vi: "Chợ"},
-            {en: "Mall", vi: "Trung tâm thương mại"}, {en: "Shop", vi: "Cửa hiệu"}, {en: "Boutique", vi: "Cửa hàng thời trang"},
-            {en: "Department store", vi: "Cửa hàng bách hóa"}, {en: "Supermarket", vi: "Siêu thị"}, {en: "Cashier", vi: "Thu ngân"},
-            {en: "Sale", vi: "Giảm giá"}, {en: "Discount", vi: "Chiết khấu"}, {en: "Payment", vi: "Thanh toán"},
-            {en: "Receipt", vi: "Biên lai"}, {en: "Product", vi: "Sản phẩm"}, {en: "Brand", vi: "Thương hiệu"},
-            {en: "Size", vi: "Kích cỡ"}, {en: "Price", vi: "Giá"}, {en: "Quality", vi: "Chất lượng"},
-            {en: "Customer", vi: "Khách hàng"}, {en: "Saleperson", vi: "Nhân viên bán hàng"}
-        ]
-    },
-    {
-        id: 6,
-        title: "Công việc và ngành nghề",
-        icon: "💼",
-        words: [
-            {en: "Job", vi: "Công việc"}, {en: "Occupation", vi: "Nghề nghiệp"}, {en: "Profession", vi: "Chuyên nghiệp"},
-            {en: "Career", vi: "Sự nghiệp"}, {en: "Employee", vi: "Nhân viên"}, {en: "Employer", vi: "Chủ doanh nghiệp"},
-            {en: "Manager", vi: "Quản lý"}, {en: "Supervisor", vi: "Giám sát"}, {en: "Colleague", vi: "Đồng nghiệp"},
-            {en: "Team", vi: "Nhóm"}, {en: "Project", vi: "Dự án"}, {en: "Deadline", vi: "Hạn chót"},
-            {en: "Meeting", vi: "Cuộc họp"}, {en: "Presentation", vi: "Bài thuyết trình"}, {en: "Resume", vi: "Sơ yếu lý lịch"},
-            {en: "Interview", vi: "Phỏng vấn"}, {en: "Salary", vi: "Lương"}, {en: "Promotion", vi: "Thăng tiến"},
-            {en: "Retirement", vi: "Về hưu"}, {en: "Work-life balance", vi: "Cân bằng công việc và cuộc sống"}
-        ]
-    },
-    {
-        id: 7,
-        title: "Thể thao và hoạt động thể dục",
-        icon: "⚽",
-        words: [
-            {en: "Sports", vi: "Thể thao"}, {en: "Football", vi: "Bóng đá"}, {en: "Basketball", vi: "Bóng rổ"},
-            {en: "Tennis", vi: "Tennis"}, {en: "Swimming", vi: "Bơi lội"}, {en: "Running", vi: "Chạy bộ"},
-            {en: "Cycling", vi: "Đạp xe"}, {en: "Gymnastics", vi: "Thể dục dụng cụ"}, {en: "Yoga", vi: "Yoga"},
-            {en: "Boxing", vi: "Quyền Anh"}, {en: "Golf", vi: "Golf"}, {en: "Volleyball", vi: "Bóng chuyền"},
-            {en: "Table tennis", vi: "Bóng bàn"}, {en: "Athletics", vi: "Điền kinh"}, {en: "Badminton", vi: "Cầu lông"},
-            {en: "Hiking", vi: "Leo núi"}, {en: "Skiing", vi: "Trượt tuyết"}, {en: "Surfing", vi: "Lướt sóng"},
-            {en: "Sailing", vi: "Đi thuyền"}, {en: "Martial arts", vi: "Võ thuật"}
-        ]
-    },
-    {
-        id: 8,
-        title: "Giao thông và phương tiện",
-        icon: "🚗",
-        words: [
-            {en: "Traffic", vi: "Giao thông"}, {en: "Vehicle", vi: "Phương tiện"}, {en: "Car", vi: "Ô tô"},
-            {en: "Motorcycle", vi: "Xe máy"}, {en: "Bicycle", vi: "Xe đạp"}, {en: "Bus", vi: "Xe buýt"},
-            {en: "Taxi", vi: "Xe taxi"}, {en: "Train", vi: "Tàu hỏa"}, {en: "Subway", vi: "Tàu điện ngầm"},
-            {en: "Tram", vi: "Xe điện"}, {en: "Plane", vi: "Máy bay"}, {en: "Ship", vi: "Tàu biển"},
-            {en: "Boat", vi: "Thuyền"}, {en: "Ferry", vi: "Phà"}, {en: "Pedestrian", vi: "Người đi bộ"},
-            {en: "Intersection", vi: "Ngã tư"}, {en: "Traffic light", vi: "Đèn giao thông"}, {en: "Crosswalk", vi: "Vạch dành cho người đi bộ"},
-            {en: "Highway", vi: "Đường cao tốc"}, {en: "Parking", vi: "Bãi đỗ xe"}
-        ]
-    },
-    {
-        id: 9,
-        title: "Sức khỏe và y tế",
-        icon: "🏥",
-        words: [
-            {en: "Health", vi: "Sức khỏe"}, {en: "Wellness", vi: "Sự khỏe mạnh"}, {en: "Doctor", vi: "Bác sĩ"},
-            {en: "Nurse", vi: "Y tá"}, {en: "Hospital", vi: "Bệnh viện"}, {en: "Clinic", vi: "Phòng khám"},
-            {en: "Patient", vi: "Bệnh nhân"}, {en: "Medicine", vi: "Thuốc"}, {en: "Prescription", vi: "Đơn thuốc"},
-            {en: "Symptom", vi: "Triệu chứng"}, {en: "Allergy", vi: "Dị ứng"}, {en: "Fever", vi: "Sốt"},
-            {en: "Cough", vi: "Ho"}, {en: "Headache", vi: "Đau đầu"}, {en: "Stomachache", vi: "Đau bụng"},
-            {en: "Flu", vi: "Cúm"}, {en: "Vaccine", vi: "Vắc-xin"}, {en: "Check-up", vi: "Kiểm tra sức khỏe"},
-            {en: "Exercise", vi: "Tập luyện"}, {en: "Healthy diet", vi: "Chế độ ăn lành mạnh"}
-        ]
-    },
-    {
-        id: 10,
-        title: "Trường học và giáo dục",
-        icon: "🏫",
-        words: [
-            {en: "School", vi: "Trường học"}, {en: "Classroom", vi: "Lớp học"}, {en: "Teacher", vi: "Giáo viên"},
-            {en: "Student", vi: "Học sinh"}, {en: "Lesson", vi: "Bài học"}, {en: "Homework", vi: "Bài tập về nhà"},
-            {en: "Exam", vi: "Kỳ thi"}, {en: "Test", vi: "Bài kiểm tra"}, {en: "Subject", vi: "Môn học"},
-            {en: "Book", vi: "Sách"}, {en: "Pen", vi: "Bút"}, {en: "Pencil", vi: "Bút chì"},
-            {en: "Eraser", vi: "Cục tẩy"}, {en: "Calculator", vi: "Máy tính"}, {en: "Whiteboard", vi: "Bảng trắng"},
-            {en: "Projector", vi: "Máy chiếu"}, {en: "Backpack", vi: "Ba lô"}, {en: "Uniform", vi: "Đồng phục"},
-            {en: "Graduation", vi: "Lễ tốt nghiệp"}, {en: "Education", vi: "Giáo dục"}
-        ]
-    },
-    {
-        id: 11,
-        title: "Đồ ăn và nhà hàng",
-        icon: "🍔",
-        words: [
-            {en: "Food", vi: "Đồ ăn"}, {en: "Meal", vi: "Bữa ăn"}, {en: "Breakfast", vi: "Bữa sáng"},
-            {en: "Lunch", vi: "Bữa trưa"}, {en: "Dinner", vi: "Bữa tối"}, {en: "Appetizer", vi: "Món khai vị"},
-            {en: "Main course", vi: "Món chính"}, {en: "Dessert", vi: "Món tráng miệng"}, {en: "Beverage", vi: "Đồ uống"},
-            {en: "Coffee", vi: "Cà phê"}, {en: "Tea", vi: "Trà"}, {en: "Juice", vi: "Nước ép"},
-            {en: "Water", vi: "Nước"}, {en: "Salad", vi: "Rau trộn"}, {en: "Soup", vi: "Canh"},
-            {en: "Sandwich", vi: "Bánh mì kẹp"}, {en: "Pasta", vi: "Mì"}, {en: "Steak", vi: "Bít tết"},
-            {en: "Seafood", vi: "Hải sản"}, {en: "Restaurant", vi: "Nhà hàng"}
-        ]
-    },
-    {
-        id: 12,
-        title: "Môi trường",
-        icon: "🌳",
-        words: [
-            {en: "Environment", vi: "Môi trường"}, {en: "Nature", vi: "Thiên nhiên"}, {en: "Pollution", vi: "Ô nhiễm"},
-            {en: "Climate", vi: "Khí hậu"}, {en: "Conservation", vi: "Bảo tồn"}, {en: "Recycling", vi: "Tái chế"},
-            {en: "Renewable", vi: "Tái tạo"}, {en: "Sustainable", vi: "Bền vững"}, {en: "Biodiversity", vi: "Đa dạng sinh học"},
-            {en: "Ecosystem", vi: "Hệ sinh thái"}, {en: "Deforestation", vi: "Tàn phá rừng"}, {en: "Climate change", vi: "Biến đổi khí hậu"},
-            {en: "Global warming", vi: "Nóng lên toàn cầu"}, {en: "Air pollution", vi: "Ô nhiễm không khí"}, {en: "Water pollution", vi: "Ô nhiễm nước"},
-            {en: "Waste", vi: "Chất thải"}, {en: "Energy", vi: "Năng lượng"}, {en: "Ozone layer", vi: "Tầng ôzôn"}
-        ]
-    },
-    {
-        id: 13,
-        title: "Công nghệ",
-        icon: "💻",
-        words: [
-            {en: "Technology", vi: "Công nghệ"}, {en: "Computer", vi: "Máy tính"}, {en: "Internet", vi: "Internet"},
-            {en: "Website", vi: "Trang web"}, {en: "Software", vi: "Phần mềm"}, {en: "Hardware", vi: "Phần cứng"},
-            {en: "Smartphone", vi: "Điện thoại thông minh"}, {en: "Tablet", vi: "Máy tính bảng"}, {en: "App", vi: "Ứng dụng"},
-            {en: "Social media", vi: "Mạng xã hội"}, {en: "Network", vi: "Mạng"}, {en: "Digital", vi: "Kỹ thuật số"},
-            {en: "Cybersecurity", vi: "An ninh mạng"}, {en: "Artificial intelligence", vi: "Trí tuệ nhân tạo"}, {en: "Virtual reality", vi: "Thực tế ảo"},
-            {en: "Cloud computing", vi: "Điện toán đám mây"}, {en: "Automation", vi: "Tự động hóa"}, {en: "Robotics", vi: "Robot"},
-            {en: "Innovation", vi: "Đổi mới"}, {en: "Data", vi: "Dữ liệu"}
-        ]
-    },
-    {
-        id: 14,
-        title: "Âm nhạc",
-        icon: "🎵",
-        words: [
-            {en: "Music", vi: "Âm nhạc"}, {en: "Song", vi: "Bài hát"}, {en: "Singer", vi: "Ca sĩ"},
-            {en: "Band", vi: "Ban nhạc"}, {en: "Guitar", vi: "Đàn guitar"}, {en: "Piano", vi: "Đàn piano"},
-            {en: "Drum", vi: "Trống"}, {en: "Violin", vi: "Đàn vi-ô-lông"}, {en: "Flute", vi: "Sáo"},
-            {en: "Saxophone", vi: "Kèn saxophone"}, {en: "Concert", vi: "Buổi hòa nhạc"}, {en: "Album", vi: "Album"},
-            {en: "Lyrics", vi: "Lời bài hát"}, {en: "Melody", vi: "Giai điệu"}, {en: "Harmony", vi: "Sự hài hòa"},
-            {en: "Beat", vi: "Nhịp điệu"}, {en: "Chorus", vi: "Đoạn hợp xướng"}, {en: "Symphony", vi: "Giao hưởng"},
-            {en: "Genre", vi: "Thể loại"}, {en: "Dance", vi: "Khiêu vũ"}
-        ]
-    },
-    {
-        id: 15,
-        title: "Kinh doanh",
-        icon: "📈",
-        words: [
-            {en: "Business", vi: "Kinh doanh"}, {en: "Entrepreneur", vi: "Doanh nhân"}, {en: "Company", vi: "Công ty"},
-            {en: "Corporation", vi: "Tập đoàn"}, {en: "Startup", vi: "Doanh nghiệp khởi nghiệp"}, {en: "Marketing", vi: "Tiếp thị"},
-            {en: "Sales", vi: "Bán hàng"}, {en: "Customer", vi: "Khách hàng"}, {en: "Product", vi: "Sản phẩm"},
-            {en: "Service", vi: "Dịch vụ"}, {en: "Brand", vi: "Thương hiệu"}, {en: "Market", vi: "Thị trường"},
-            {en: "Finance", vi: "Tài chính"}, {en: "Investment", vi: "Đầu tư"}, {en: "Profit", vi: "Lợi nhuận"},
-            {en: "Entrepreneurship", vi: "Tinh thần khởi nghiệp"}, {en: "Strategy", vi: "Chiến lược"}, {en: "Networking", vi: "Mạng lưới"},
-            {en: "Negotiation", vi: "Thương lượng"}, {en: "Partnership", vi: "Đối tác"}
-        ]
-    },
-    {
-        id: 16,
-        title: "Văn hóa và truyền thống",
-        icon: "🏮",
-        words: [
-            {en: "Culture", vi: "Văn hóa"}, {en: "Tradition", vi: "Truyền thống"}, {en: "Heritage", vi: "Di sản"},
-            {en: "Custom", vi: "Phong tục"}, {en: "Ritual", vi: "Nghi lễ"}, {en: "Ceremony", vi: "Lễ nghi"},
-            {en: "Folklore", vi: "Văn hóa dân gian"}, {en: "Traditional costume", vi: "Trang phục truyền thống"}, {en: "Dance", vi: "Vũ điệu"},
-            {en: "Music", vi: "Âm nhạc"}, {en: "Art", vi: "Nghệ thuật"}, {en: "Literature", vi: "Văn học"},
-            {en: "Architecture", vi: "Kiến trúc"}, {en: "Sculpture", vi: "Điêu khắc"}, {en: "Painting", vi: "Hội hoạ"},
-            {en: "Festival", vi: "Lễ hội"}, {en: "Cuisine", vi: "Ẩm thực"}, {en: "Handicraft", vi: "Đồ thủ công"},
-            {en: "Belief", vi: "Niềm tin"}
-        ]
-    },
-    {
-        id: 17,
-        title: "Nghệ thuật",
-        icon: "🎨",
-        words: [
-            {en: "Art", vi: "Nghệ thuật"}, {en: "Painting", vi: "Hội hoạ"}, {en: "Sculpture", vi: "Điêu khắc"},
-            {en: "Drawing", vi: "Vẽ"}, {en: "Sketch", vi: "Bản phác thảo"}, {en: "Canvas", vi: "Bức tranh"},
-            {en: "Brush", vi: "Cọ"}, {en: "Palette", vi: "Bảng màu"}, {en: "Gallery", vi: "Phòng trưng bày"},
-            {en: "Exhibition", vi: "Triển lãm"}, {en: "Sculptor", vi: "Nghệ sĩ điêu khắc"}, {en: "Painter", vi: "Họa sĩ"},
-            {en: "Masterpiece", vi: "Kiệt tác"}, {en: "Abstract", vi: "Trừu tượng"}, {en: "Realism", vi: "Chân thực"},
-            {en: "Portrait", vi: "Chân dung"}, {en: "Landscape", vi: "Phong cảnh"}, {en: "Still life", vi: "Tự nhiên"},
-            {en: "Photography", vi: "Nhiếp ảnh"}, {en: "Composition", vi: "Cấu trúc"}
-        ]
-    },
-    {
-        id: 18,
-        title: "Kỹ năng",
-        icon: "🛠️",
-        words: [
-            {en: "Skill", vi: "Kỹ năng"}, {en: "Communication", vi: "Giao tiếp"}, {en: "Leadership", vi: "Lãnh đạo"},
-            {en: "Problem-solving", vi: "Giải quyết vấn đề"}, {en: "Time management", vi: "Quản lý thời gian"}, {en: "Teamwork", vi: "Làm việc nhóm"},
-            {en: "Adaptability", vi: "Tính linh hoạt"}, {en: "Critical thinking", vi: "Tư duy phản biện"}, {en: "Creativity", vi: "Sáng tạo"},
-            {en: "Decision-making", vi: "Ra quyết định"}, {en: "Negotiation", vi: "Thương lượng"}, {en: "Presentation", vi: "Thuyết trình"},
-            {en: "Public speaking", vi: "Diễn thuyết công khai"}, {en: "Networking", vi: "Mạng lưới"}, {en: "Organization", vi: "Tổ chức"},
-            {en: "Self-motivation", vi: "Tự động viên"}
-        ]
-    },
-    {
-        id: 19,
-        title: "Xã hội",
-        icon: "🤝",
-        words: [
-            {en: "Society", vi: "Xã hội"}, {en: "Community", vi: "Cộng đồng"}, {en: "Culture", vi: "Văn hóa"},
-            {en: "Tradition", vi: "Truyền thống"}, {en: "Diversity", vi: "Đa dạng"}, {en: "Equality", vi: "Bình đẳng"},
-            {en: "Discrimination", vi: "Phân biệt đối xử"}, {en: "Inclusion", vi: "Sự bao gồm"}, {en: "Exclusion", vi: "Sự loại trừ"},
-            {en: "Poverty", vi: "Nghèo đói"}, {en: "Wealth", vi: "Giàu có"}, {en: "Education", vi: "Giáo dục"},
-            {en: "Health", vi: "Sức khỏe"}, {en: "Environment", vi: "Môi trường"}, {en: "Politics", vi: "Chính trị"},
-            {en: "Democracy", vi: "Dân chủ"}, {en: "Government", vi: "Chính phủ"}, {en: "Activism", vi: "Hoạt động chính trị"},
-            {en: "Human rights", vi: "Quyền con người"}, {en: "Volunteer", vi: "Tình nguyện viên"}
-        ]
-    },
-    {
-        id: 20,
-        title: "Tài chính – Ngân hàng",
-        icon: "💰",
-        words: [
-            {en: "Finance", vi: "Tài chính"}, {en: "Banking", vi: "Ngân hàng"}, {en: "Account", vi: "Tài khoản"},
-            {en: "Investment", vi: "Đầu tư"}, {en: "Interest", vi: "Lãi suất"}, {en: "Loan", vi: "Khoản vay"},
-            {en: "Mortgage", vi: "Thế chấp"}, {en: "Credit", vi: "Tín dụng"}, {en: "Debit", vi: "Nợ"},
-            {en: "Balance", vi: "Số dư"}, {en: "Currency", vi: "Tiền tệ"}, {en: "Exchange rate", vi: "Tỷ giá"},
-            {en: "Stock", vi: "Cổ phiếu"}, {en: "Share", vi: "Cổ phiếu"}, {en: "Dividend", vi: "Cổ tức"},
-            {en: "Asset", vi: "Tài sản"}, {en: "Liability", vi: "Nghĩa vụ"}, {en: "Insurance", vi: "Bảo hiểm"},
-            {en: "Transaction", vi: "Giao dịch"}, {en: "Audit", vi: "Kiểm toán"}
-        ]
-    },
-    {
-        id: 21,
-        title: "Pháp luật",
-        icon: "⚖️",
-        words: [
-            {en: "Law", vi: "Pháp luật"}, {en: "Legal", vi: "Pháp lý"}, {en: "Legislation", vi: "Luật pháp"},
-            {en: "Constitution", vi: "Hiến pháp"}, {en: "Justice", vi: "Công lý"}, {en: "Court", vi: "Tòa án"},
-            {en: "Judge", vi: "Thẩm phán"}, {en: "Lawyer", vi: "Luật sư"}, {en: "Trial", vi: "Phiên tòa"},
-            {en: "Evidence", vi: "Bằng chứng"}, {en: "Crime", vi: "Tội ác"}, {en: "Punishment", vi: "Hình phạt"},
-            {en: "Verdict", vi: "Bản án"}, {en: "Defendant", vi: "Bị cáo"}, {en: "Plaintiff", vi: "Nguyên đơn"},
-            {en: "Witness", vi: "Nhân chứng"}, {en: "Arrest", vi: "Bắt giữ"}, {en: "Guilty", vi: "Có tội"},
-            {en: "Innocent", vi: "Vô tội"}, {en: "Civil", vi: "Dân sự"}
-        ]
-    },
-    {
-        id: 22,
-        title: "Giao tiếp – Truyền thông",
-        icon: "📡",
-        words: [
-            {en: "Communication", vi: "Giao tiếp"}, {en: "Conversation", vi: "Cuộc trò chuyện"}, {en: "Dialogue", vi: "Đối thoại"},
-            {en: "Language", vi: "Ngôn ngữ"}, {en: "Verbal", vi: "Bằng lời"}, {en: "Nonverbal", vi: "Không lời"},
-            {en: "Gesture", vi: "Cử chỉ"}, {en: "Expression", vi: "Biểu hiện"}, {en: "Listening", vi: "Lắng nghe"},
-            {en: "Speaking", vi: "Nói chuyện"}, {en: "Writing", vi: "Viết"}, {en: "Presentation", vi: "Thuyết trình"},
-            {en: "Media", vi: "Phương tiện truyền thông"}, {en: "News", vi: "Tin tức"}, {en: "Interview", vi: "Phỏng vấn"},
-            {en: "Broadcast", vi: "Phát sóng"}, {en: "Advertisement", vi: "Quảng cáo"}, {en: "Social media", vi: "Mạng xã hội"},
-            {en: "Public relations", vi: "Quan hệ công chúng"}, {en: "Feedback", vi: "Phản hồi"}
-        ]
-    },
-    {
-        id: 23,
-        title: "Cuộc sống hàng ngày",
-        icon: "🌅",
-        words: [
-            {en: "Daily", vi: "Hàng ngày"}, {en: "Routine", vi: "Lịch trình"}, {en: "Morning", vi: "Buổi sáng"},
-            {en: "Afternoon", vi: "Buổi chiều"}, {en: "Evening", vi: "Buổi tối"}, {en: "Night", vi: "Buổi đêm"},
-            {en: "Breakfast", vi: "Bữa sáng"}, {en: "Lunch", vi: "Bữa trưa"}, {en: "Dinner", vi: "Bữa tối"},
-            {en: "Work", vi: "Công việc"}, {en: "Study", vi: "Học tập"}, {en: "Exercise", vi: "Tập luyện"},
-            {en: "Relax", vi: "Thư giãn"}, {en: "Family", vi: "Gia đình"}, {en: "Friends", vi: "Bạn bè"},
-            {en: "Hobbies", vi: "Sở thích"}, {en: "Entertainment", vi: "Giải trí"}, {en: "Shopping", vi: "Mua sắm"},
-            {en: "Relaxation", vi: "Sự thư giãn"}, {en: "Sleep", vi: "Giấc ngủ"}
-        ]
-    },
-    {
-        id: 24,
-        title: "Cảm xúc – Tâm lý",
-        icon: "🧠",
-        words: [
-            {en: "Emotion", vi: "Cảm xúc"}, {en: "Feeling", vi: "Cảm giác"}, {en: "Happy", vi: "Hạnh phúc"},
-            {en: "Sad", vi: "Buồn"}, {en: "Angry", vi: "Tức giận"}, {en: "Excited", vi: "Hào hứng"},
-            {en: "Nervous", vi: "Lo lắng"}, {en: "Surprised", vi: "Ngạc nhiên"}, {en: "Fear", vi: "Sợ hãi"},
-            {en: "Love", vi: "Tình yêu"}, {en: "Hate", vi: "Ghét bỏ"}, {en: "Joy", vi: "Vui mừng"},
-            {en: "Sorrow", vi: "Đau buồn"}, {en: "Anxiety", vi: "Lo lắng"}, {en: "Confidence", vi: "Tự tin"},
-            {en: "Stress", vi: "Căng thẳng"}, {en: "Loneliness", vi: "Cô đơn"}, {en: "Disgust", vi: "Chán ghét"},
-            {en: "Happiness", vi: "Hạnh phúc"}
-        ]
-    },
-    {
-        id: 25,
-        title: "Tình yêu – Mối quan hệ",
-        icon: "❤️",
-        words: [
-            {en: "Love", vi: "Tình yêu"}, {en: "Relationship", vi: "Mối quan hệ"}, {en: "Romance", vi: "Tình cảm"},
-            {en: "Partner", vi: "Đối tác"}, {en: "Couple", vi: "Cặp đôi"}, {en: "Date", vi: "Hẹn hò"},
-            {en: "Marriage", vi: "Hôn nhân"}, {en: "Wedding", vi: "Đám cưới"}, {en: "Engaged", vi: "Đính hôn"},
-            {en: "Breakup", vi: "Chia tay"}, {en: "Heart", vi: "Trái tim"}, {en: "Passion", vi: "Đam mê"},
-            {en: "Trust", vi: "Lòng tin"}, {en: "Loyalty", vi: "Sự trung thành"}, {en: "Jealousy", vi: "Ghen tỵ"},
-            {en: "Intimacy", vi: "Sự thân mật"}, {en: "Commitment", vi: "Sự cam kết"}, {en: "Support", vi: "Sự hỗ trợ"},
-            {en: "Respect", vi: "Sự tôn trọng"}, {en: "Understanding", vi: "Sự hiểu biết"}
-        ]
-    }
-];
+    // DỮ LIỆU TỪ VỰNG HOÀN CHỈNH - 25 CHỦ ĐỀ
+    const defaultSeedTopics = [
+        {
+            id: 1, title: "Gia đình và mối quan hệ", icon: "👨‍👩‍👧‍👦",
+            words: [
+                {en: "Family", vi: "Gia đình"}, {en: "Parents", vi: "Bố mẹ"}, {en: "Siblings", vi: "Anh chị em ruột"},
+                {en: "Children", vi: "Con cái"}, {en: "Grandparents", vi: "Ông bà"}, {en: "Cousins", vi: "Anh chị em họ"},
+                {en: "Nephew", vi: "Cháu trai"}, {en: "Niece", vi: "Cháu gái"}, {en: "Aunt", vi: "Cô, dì"},
+                {en: "Uncle", vi: "Chú, bác"}, {en: "Spouse", vi: "Vợ, chồng"}, {en: "In-laws", vi: "Bố mẹ chồng, bố mẹ vợ"},
+                {en: "Brother-in-law", vi: "Anh rể, em chồng"}, {en: "Sister-in-law", vi: "Chị dâu, em vợ"},
+                {en: "Son", vi: "Con trai"}, {en: "Daughter", vi: "Con gái"}, {en: "Brother", vi: "Anh/em trai"},
+                {en: "Sister", vi: "Chị/em gái"}
+            ]
+        },
+        {
+            id: 2, title: "Sở thích và giải trí", icon: "🎨",
+            words: [
+                {en: "Hobby", vi: "Sở thích"}, {en: "Sports", vi: "Thể thao"}, {en: "Music", vi: "Âm nhạc"},
+                {en: "Reading", vi: "Đọc sách"}, {en: "Painting", vi: "Vẽ tranh"}, {en: "Photography", vi: "Nhiếp ảnh"},
+                {en: "Cooking", vi: "Nấu ăn"}, {en: "Gardening", vi: "Làm vườn"}, {en: "Traveling", vi: "Du lịch"},
+                {en: "Dancing", vi: "Nhảy múa"}, {en: "Gaming", vi: "Chơi game"}, {en: "Movies", vi: "Phim"},
+                {en: "Theatre", vi: "Nhà hát"}, {en: "Concert", vi: "Buổi hòa nhạc"}, {en: "Art", vi: "Nghệ thuật"},
+                {en: "Writing", vi: "Viết"}, {en: "Cycling", vi: "Đạp xe"}, {en: "Swimming", vi: "Bơi lội"},
+                {en: "Hiking", vi: "Leo núi"}, {en: "Yoga", vi: "Yoga"}
+            ]
+        },
+        {
+            id: 3, title: "Thời tiết và mùa trong năm", icon: "⛅",
+            words: [
+                {en: "Weather", vi: "Thời tiết"}, {en: "Temperature", vi: "Nhiệt độ"}, {en: "Sunny", vi: "Nắng"},
+                {en: "Cloudy", vi: "Mây"}, {en: "Rainy", vi: "Mưa"}, {en: "Snowy", vi: "Tuyết"},
+                {en: "Windy", vi: "Gió"}, {en: "Stormy", vi: "Bão"}, {en: "Foggy", vi: "Sương mù"},
+                {en: "Season", vi: "Mùa"}, {en: "Spring", vi: "Mùa xuân"}, {en: "Summer", vi: "Mùa hè"},
+                {en: "Autumn", vi: "Mùa thu"}, {en: "Winter", vi: "Mùa đông"}, {en: "January", vi: "Tháng một"},
+                {en: "February", vi: "Tháng hai"}, {en: "March", vi: "Tháng ba"}, {en: "April", vi: "Tháng tư"},
+                {en: "May", vi: "Tháng năm"}, {en: "June", vi: "Tháng sáu"}
+            ]
+        },
+        {
+            id: 4, title: "Thành phố và địa điểm du lịch", icon: "🏙️",
+            words: [
+                {en: "City", vi: "Thành phố"}, {en: "Town", vi: "Thị trấn"}, {en: "Capital", vi: "Thủ đô"},
+                {en: "Street", vi: "Đường"}, {en: "Avenue", vi: "Đại lộ"}, {en: "Square", vi: "Quảng trường"},
+                {en: "Park", vi: "Công viên"}, {en: "Museum", vi: "Bảo tàng"}, {en: "Gallery", vi: "Triển lãm"},
+                {en: "Landmark", vi: "Địa danh"}, {en: "Cathedral", vi: "Nhà thờ chính"}, {en: "Temple", vi: "Đền, chùa"},
+                {en: "Palace", vi: "Cung điện"}, {en: "Castle", vi: "Lâu đài"}, {en: "Bridge", vi: "Cầu"},
+                {en: "Beach", vi: "Bãi biển"}, {en: "Lake", vi: "Hồ"}, {en: "Mountain", vi: "Núi"},
+                {en: "Garden", vi: "Vườn"}, {en: "Zoo", vi: "Sở thú"}
+            ]
+        },
+        {
+            id: 5, title: "Mua sắm và mặt hàng", icon: "🛒",
+            words: [
+                {en: "Shopping", vi: "Mua sắm"}, {en: "Store", vi: "Cửa hàng"}, {en: "Market", vi: "Chợ"},
+                {en: "Mall", vi: "Trung tâm thương mại"}, {en: "Shop", vi: "Cửa hiệu"}, {en: "Boutique", vi: "Cửa hàng thời trang"},
+                {en: "Department store", vi: "Cửa hàng bách hóa"}, {en: "Supermarket", vi: "Siêu thị"}, {en: "Cashier", vi: "Thu ngân"},
+                {en: "Sale", vi: "Giảm giá"}, {en: "Discount", vi: "Chiết khấu"}, {en: "Payment", vi: "Thanh toán"},
+                {en: "Receipt", vi: "Biên lai"}, {en: "Product", vi: "Sản phẩm"}, {en: "Brand", vi: "Thương hiệu"},
+                {en: "Size", vi: "Kích cỡ"}, {en: "Price", vi: "Giá"}, {en: "Quality", vi: "Chất lượng"},
+                {en: "Customer", vi: "Khách hàng"}, {en: "Saleperson", vi: "Nhân viên bán hàng"}
+            ]
+        },
+        {
+            id: 6, title: "Công việc và ngành nghề", icon: "💼",
+            words: [
+                {en: "Job", vi: "Công việc"}, {en: "Occupation", vi: "Nghề nghiệp"}, {en: "Profession", vi: "Chuyên nghiệp"},
+                {en: "Career", vi: "Sự nghiệp"}, {en: "Employee", vi: "Nhân viên"}, {en: "Employer", vi: "Chủ doanh nghiệp"},
+                {en: "Manager", vi: "Quản lý"}, {en: "Supervisor", vi: "Giám sát"}, {en: "Colleague", vi: "Đồng nghiệp"},
+                {en: "Team", vi: "Nhóm"}, {en: "Project", vi: "Dự án"}, {en: "Deadline", vi: "Hạn chót"},
+                {en: "Meeting", vi: "Cuộc họp"}, {en: "Presentation", vi: "Bài thuyết trình"}, {en: "Resume", vi: "Sơ yếu lý lịch"},
+                {en: "Interview", vi: "Phỏng vấn"}, {en: "Salary", vi: "Lương"}, {en: "Promotion", vi: "Thăng tiến"},
+                {en: "Retirement", vi: "Về hưu"}, {en: "Work-life balance", vi: "Cân bằng công việc và cuộc sống"}
+            ]
+        },
+        {
+            id: 7, title: "Thể thao và hoạt động thể dục", icon: "⚽",
+            words: [
+                {en: "Sports", vi: "Thể thao"}, {en: "Football", vi: "Bóng đá"}, {en: "Basketball", vi: "Bóng rổ"},
+                {en: "Tennis", vi: "Tennis"}, {en: "Swimming", vi: "Bơi lội"}, {en: "Running", vi: "Chạy bộ"},
+                {en: "Cycling", vi: "Đạp xe"}, {en: "Gymnastics", vi: "Thể dục dụng cụ"}, {en: "Yoga", vi: "Yoga"},
+                {en: "Boxing", vi: "Quyền Anh"}, {en: "Golf", vi: "Golf"}, {en: "Volleyball", vi: "Bóng chuyền"},
+                {en: "Table tennis", vi: "Bóng bàn"}, {en: "Athletics", vi: "Điền kinh"}, {en: "Badminton", vi: "Cầu lông"},
+                {en: "Hiking", vi: "Leo núi"}, {en: "Skiing", vi: "Trượt tuyết"}, {en: "Surfing", vi: "Lướt sóng"},
+                {en: "Sailing", vi: "Đi thuyền"}, {en: "Martial arts", vi: "Võ thuật"}
+            ]
+        },
+        {
+            id: 8, title: "Giao thông và phương tiện", icon: "🚗",
+            words: [
+                {en: "Traffic", vi: "Giao thông"}, {en: "Vehicle", vi: "Phương tiện"}, {en: "Car", vi: "Ô tô"},
+                {en: "Motorcycle", vi: "Xe máy"}, {en: "Bicycle", vi: "Xe đạp"}, {en: "Bus", vi: "Xe buýt"},
+                {en: "Taxi", vi: "Xe taxi"}, {en: "Train", vi: "Tàu hỏa"}, {en: "Subway", vi: "Tàu điện ngầm"},
+                {en: "Tram", vi: "Xe điện"}, {en: "Plane", vi: "Máy bay"}, {en: "Ship", vi: "Tàu biển"},
+                {en: "Boat", vi: "Thuyền"}, {en: "Ferry", vi: "Phà"}, {en: "Pedestrian", vi: "Người đi bộ"},
+                {en: "Intersection", vi: "Ngã tư"}, {en: "Traffic light", vi: "Đèn giao thông"}, {en: "Crosswalk", vi: "Vạch dành cho người đi bộ"},
+                {en: "Highway", vi: "Đường cao tốc"}, {en: "Parking", vi: "Bãi đỗ xe"}
+            ]
+        },
+        {
+            id: 9, title: "Sức khỏe và y tế", icon: "🏥",
+            words: [
+                {en: "Health", vi: "Sức khỏe"}, {en: "Wellness", vi: "Sự khỏe mạnh"}, {en: "Doctor", vi: "Bác sĩ"},
+                {en: "Nurse", vi: "Y tá"}, {en: "Hospital", vi: "Bệnh viện"}, {en: "Clinic", vi: "Phòng khám"},
+                {en: "Patient", vi: "Bệnh nhân"}, {en: "Medicine", vi: "Thuốc"}, {en: "Prescription", vi: "Đơn thuốc"},
+                {en: "Symptom", vi: "Triệu chứng"}, {en: "Allergy", vi: "Dị ứng"}, {en: "Fever", vi: "Sốt"},
+                {en: "Cough", vi: "Ho"}, {en: "Headache", vi: "Đau đầu"}, {en: "Stomachache", vi: "Đau bụng"},
+                {en: "Flu", vi: "Cúm"}, {en: "Vaccine", vi: "Vắc-xin"}, {en: "Check-up", vi: "Kiểm tra sức khỏe"},
+                {en: "Exercise", vi: "Tập luyện"}, {en: "Healthy diet", vi: "Chế độ ăn lành mạnh"}
+            ]
+        },
+        {
+            id: 10, title: "Trường học và giáo dục", icon: "🏫",
+            words: [
+                {en: "School", vi: "Trường học"}, {en: "Classroom", vi: "Lớp học"}, {en: "Teacher", vi: "Giáo viên"},
+                {en: "Student", vi: "Học sinh"}, {en: "Lesson", vi: "Bài học"}, {en: "Homework", vi: "Bài tập về nhà"},
+                {en: "Exam", vi: "Kỳ thi"}, {en: "Test", vi: "Bài kiểm tra"}, {en: "Subject", vi: "Môn học"},
+                {en: "Book", vi: "Sách"}, {en: "Pen", vi: "Bút"}, {en: "Pencil", vi: "Bút chì"},
+                {en: "Eraser", vi: "Cục tẩy"}, {en: "Calculator", vi: "Máy tính"}, {en: "Whiteboard", vi: "Bảng trắng"},
+                {en: "Projector", vi: "Máy chiếu"}, {en: "Backpack", vi: "Ba lô"}, {en: "Uniform", vi: "Đồng phục"},
+                {en: "Graduation", vi: "Lễ tốt nghiệp"}, {en: "Education", vi: "Giáo dục"}
+            ]
+        },
+        {
+            id: 11, title: "Đồ ăn và nhà hàng", icon: "🍔",
+            words: [
+                {en: "Food", vi: "Đồ ăn"}, {en: "Meal", vi: "Bữa ăn"}, {en: "Breakfast", vi: "Bữa sáng"},
+                {en: "Lunch", vi: "Bữa trưa"}, {en: "Dinner", vi: "Bữa tối"}, {en: "Appetizer", vi: "Món khai vị"},
+                {en: "Main course", vi: "Món chính"}, {en: "Dessert", vi: "Món tráng miệng"}, {en: "Beverage", vi: "Đồ uống"},
+                {en: "Coffee", vi: "Cà phê"}, {en: "Tea", vi: "Trà"}, {en: "Juice", vi: "Nước ép"},
+                {en: "Water", vi: "Nước"}, {en: "Salad", vi: "Rau trộn"}, {en: "Soup", vi: "Canh"},
+                {en: "Sandwich", vi: "Bánh mì kẹp"}, {en: "Pasta", vi: "Mì"}, {en: "Steak", vi: "Bít tết"},
+                {en: "Seafood", vi: "Hải sản"}, {en: "Restaurant", vi: "Nhà hàng"}
+            ]
+        },
+        {
+            id: 12, title: "Môi trường", icon: "🌳",
+            words: [
+                {en: "Environment", vi: "Môi trường"}, {en: "Nature", vi: "Thiên nhiên"}, {en: "Pollution", vi: "Ô nhiễm"},
+                {en: "Climate", vi: "Khí hậu"}, {en: "Conservation", vi: "Bảo tồn"}, {en: "Recycling", vi: "Tái chế"},
+                {en: "Renewable", vi: "Tái tạo"}, {en: "Sustainable", vi: "Bền vững"}, {en: "Biodiversity", vi: "Đa dạng sinh học"},
+                {en: "Ecosystem", vi: "Hệ sinh thái"}, {en: "Deforestation", vi: "Tàn phá rừng"}, {en: "Climate change", vi: "Biến đổi khí hậu"},
+                {en: "Global warming", vi: "Nóng lên toàn cầu"}, {en: "Air pollution", vi: "Ô nhiễm không khí"}, {en: "Water pollution", vi: "Ô nhiễm nước"},
+                {en: "Waste", vi: "Chất thải"}, {en: "Energy", vi: "Năng lượng"}, {en: "Ozone layer", vi: "Tầng ôzôn"}
+            ]
+        },
+        {
+            id: 13, title: "Công nghệ", icon: "💻",
+            words: [
+                {en: "Technology", vi: "Công nghệ"}, {en: "Computer", vi: "Máy tính"}, {en: "Internet", vi: "Internet"},
+                {en: "Website", vi: "Trang web"}, {en: "Software", vi: "Phần mềm"}, {en: "Hardware", vi: "Phần cứng"},
+                {en: "Smartphone", vi: "Điện thoại thông minh"}, {en: "Tablet", vi: "Máy tính bảng"}, {en: "App", vi: "Ứng dụng"},
+                {en: "Social media", vi: "Mạng xã hội"}, {en: "Network", vi: "Mạng"}, {en: "Digital", vi: "Kỹ thuật số"},
+                {en: "Cybersecurity", vi: "An ninh mạng"}, {en: "Artificial intelligence", vi: "Trí tuệ nhân tạo"}, {en: "Virtual reality", vi: "Thực tế ảo"},
+                {en: "Cloud computing", vi: "Điện toán đám mây"}, {en: "Automation", vi: "Tự động hóa"}, {en: "Robotics", vi: "Robot"},
+                {en: "Innovation", vi: "Đổi mới"}, {en: "Data", vi: "Dữ liệu"}
+            ]
+        },
+        {
+            id: 14, title: "Âm nhạc", icon: "🎵",
+            words: [
+                {en: "Music", vi: "Âm nhạc"}, {en: "Song", vi: "Bài hát"}, {en: "Singer", vi: "Ca sĩ"},
+                {en: "Band", vi: "Ban nhạc"}, {en: "Guitar", vi: "Đàn guitar"}, {en: "Piano", vi: "Đàn piano"},
+                {en: "Drum", vi: "Trống"}, {en: "Violin", vi: "Đàn vi-ô-lông"}, {en: "Flute", vi: "Sáo"},
+                {en: "Saxophone", vi: "Kèn saxophone"}, {en: "Concert", vi: "Buổi hòa nhạc"}, {en: "Album", vi: "Album"},
+                {en: "Lyrics", vi: "Lời bài hát"}, {en: "Melody", vi: "Giai điệu"}, {en: "Harmony", vi: "Sự hài hòa"},
+                {en: "Beat", vi: "Nhịp điệu"}, {en: "Chorus", vi: "Đoạn hợp xướng"}, {en: "Symphony", vi: "Giao hưởng"},
+                {en: "Genre", vi: "Thể loại"}, {en: "Dance", vi: "Khiêu vũ"}
+            ]
+        },
+        {
+            id: 15, title: "Kinh doanh", icon: "📈",
+            words: [
+                {en: "Business", vi: "Kinh doanh"}, {en: "Entrepreneur", vi: "Doanh nhân"}, {en: "Company", vi: "Công ty"},
+                {en: "Corporation", vi: "Tập đoàn"}, {en: "Startup", vi: "Doanh nghiệp khởi nghiệp"}, {en: "Marketing", vi: "Tiếp thị"},
+                {en: "Sales", vi: "Bán hàng"}, {en: "Customer", vi: "Khách hàng"}, {en: "Product", vi: "Sản phẩm"},
+                {en: "Service", vi: "Dịch vụ"}, {en: "Brand", vi: "Thương hiệu"}, {en: "Market", vi: "Thị trường"},
+                {en: "Finance", vi: "Tài chính"}, {en: "Investment", vi: "Đầu tư"}, {en: "Profit", vi: "Lợi nhuận"},
+                {en: "Entrepreneurship", vi: "Tinh thần khởi nghiệp"}, {en: "Strategy", vi: "Chiến lược"}, {en: "Networking", vi: "Mạng lưới"},
+                {en: "Negotiation", vi: "Thương lượng"}, {en: "Partnership", vi: "Đối tác"}
+            ]
+        },
+        {
+            id: 16, title: "Văn hóa và truyền thống", icon: "🏮",
+            words: [
+                {en: "Culture", vi: "Văn hóa"}, {en: "Tradition", vi: "Truyền thống"}, {en: "Heritage", vi: "Di sản"},
+                {en: "Custom", vi: "Phong tục"}, {en: "Ritual", vi: "Nghi lễ"}, {en: "Ceremony", vi: "Lễ nghi"},
+                {en: "Folklore", vi: "Văn hóa dân gian"}, {en: "Traditional costume", vi: "Trang phục truyền thống"}, {en: "Dance", vi: "Vũ điệu"},
+                {en: "Music", vi: "Âm nhạc"}, {en: "Art", vi: "Nghệ thuật"}, {en: "Literature", vi: "Văn học"},
+                {en: "Architecture", vi: "Kiến trúc"}, {en: "Sculpture", vi: "Điêu khắc"}, {en: "Painting", vi: "Hội hoạ"},
+                {en: "Festival", vi: "Lễ hội"}, {en: "Cuisine", vi: "Ẩm thực"}, {en: "Handicraft", vi: "Đồ thủ công"},
+                {en: "Belief", vi: "Niềm tin"}
+            ]
+        },
+        {
+            id: 17, title: "Nghệ thuật", icon: "🎨",
+            words: [
+                {en: "Art", vi: "Nghệ thuật"}, {en: "Painting", vi: "Hội hoạ"}, {en: "Sculpture", vi: "Điêu khắc"},
+                {en: "Drawing", vi: "Vẽ"}, {en: "Sketch", vi: "Bản phác thảo"}, {en: "Canvas", vi: "Bức tranh"},
+                {en: "Brush", vi: "Cọ"}, {en: "Palette", vi: "Bảng màu"}, {en: "Gallery", vi: "Phòng trưng bày"},
+                {en: "Exhibition", vi: "Triển lãm"}, {en: "Sculptor", vi: "Nghệ sĩ điêu khắc"}, {en: "Painter", vi: "Họa sĩ"},
+                {en: "Masterpiece", vi: "Kiệt tác"}, {en: "Abstract", vi: "Trừu tượng"}, {en: "Realism", vi: "Chân thực"},
+                {en: "Portrait", vi: "Chân dung"}, {en: "Landscape", vi: "Phong cảnh"}, {en: "Still life", vi: "Tự nhiên"},
+                {en: "Photography", vi: "Nhiếp ảnh"}, {en: "Composition", vi: "Cấu trúc"}
+            ]
+        },
+        {
+            id: 18, title: "Kỹ năng", icon: "🛠️",
+            words: [
+                {en: "Skill", vi: "Kỹ năng"}, {en: "Communication", vi: "Giao tiếp"}, {en: "Leadership", vi: "Lãnh đạo"},
+                {en: "Problem-solving", vi: "Giải quyết vấn đề"}, {en: "Time management", vi: "Quản lý thời gian"}, {en: "Teamwork", vi: "Làm việc nhóm"},
+                {en: "Adaptability", vi: "Tính linh hoạt"}, {en: "Critical thinking", vi: "Tư duy phản biện"}, {en: "Creativity", vi: "Sáng tạo"},
+                {en: "Decision-making", vi: "Ra quyết định"}, {en: "Negotiation", vi: "Thương lượng"}, {en: "Presentation", vi: "Thuyết trình"},
+                {en: "Public speaking", vi: "Diễn thuyết công khai"}, {en: "Networking", vi: "Mạng lưới"}, {en: "Organization", vi: "Tổ chức"},
+                {en: "Self-motivation", vi: "Tự động viên"}
+            ]
+        },
+        {
+            id: 19, title: "Xã hội", icon: "🤝",
+            words: [
+                {en: "Society", vi: "Xã hội"}, {en: "Community", vi: "Cộng đồng"}, {en: "Culture", vi: "Văn hóa"},
+                {en: "Tradition", vi: "Truyền thống"}, {en: "Diversity", vi: "Đa dạng"}, {en: "Equality", vi: "Bình đẳng"},
+                {en: "Discrimination", vi: "Phân biệt đối xử"}, {en: "Inclusion", vi: "Sự bao gồm"}, {en: "Exclusion", vi: "Sự loại trừ"},
+                {en: "Poverty", vi: "Nghèo đói"}, {en: "Wealth", vi: "Giàu có"}, {en: "Education", vi: "Giáo dục"},
+                {en: "Health", vi: "Sức khỏe"}, {en: "Environment", vi: "Môi trường"}, {en: "Politics", vi: "Chính trị"},
+                {en: "Democracy", vi: "Dân chủ"}, {en: "Government", vi: "Chính phủ"}, {en: "Activism", vi: "Hoạt động chính trị"},
+                {en: "Human rights", vi: "Quyền con người"}, {en: "Volunteer", vi: "Tình nguyện viên"}
+            ]
+        },
+        {
+            id: 20, title: "Tài chính – Ngân hàng", icon: "💰",
+            words: [
+                {en: "Finance", vi: "Tài chính"}, {en: "Banking", vi: "Ngân hàng"}, {en: "Account", vi: "Tài khoản"},
+                {en: "Investment", vi: "Đầu tư"}, {en: "Interest", vi: "Lãi suất"}, {en: "Loan", vi: "Khoản vay"},
+                {en: "Mortgage", vi: "Thế chấp"}, {en: "Credit", vi: "Tín dụng"}, {en: "Debit", vi: "Nợ"},
+                {en: "Balance", vi: "Số dư"}, {en: "Currency", vi: "Tiền tệ"}, {en: "Exchange rate", vi: "Tỷ giá"},
+                {en: "Stock", vi: "Cổ phiếu"}, {en: "Share", vi: "Cổ phiếu"}, {en: "Dividend", vi: "Cổ tức"},
+                {en: "Asset", vi: "Tài sản"}, {en: "Liability", vi: "Nghĩa vụ"}, {en: "Insurance", vi: "Bảo hiểm"},
+                {en: "Transaction", vi: "Giao dịch"}, {en: "Audit", vi: "Kiểm toán"}
+            ]
+        },
+        {
+            id: 21, title: "Pháp luật", icon: "⚖️",
+            words: [
+                {en: "Law", vi: "Pháp luật"}, {en: "Legal", vi: "Pháp lý"}, {en: "Legislation", vi: "Luật pháp"},
+                {en: "Constitution", vi: "Hiến pháp"}, {en: "Justice", vi: "Công lý"}, {en: "Court", vi: "Tòa án"},
+                {en: "Judge", vi: "Thẩm phán"}, {en: "Lawyer", vi: "Luật sư"}, {en: "Trial", vi: "Phiên tòa"},
+                {en: "Evidence", vi: "Bằng chứng"}, {en: "Crime", vi: "Tội ác"}, {en: "Punishment", vi: "Hình phạt"},
+                {en: "Verdict", vi: "Bản án"}, {en: "Defendant", vi: "Bị cáo"}, {en: "Plaintiff", vi: "Nguyên đơn"},
+                {en: "Witness", vi: "Nhân chứng"}, {en: "Arrest", vi: "Bắt giữ"}, {en: "Guilty", vi: "Có tội"},
+                {en: "Innocent", vi: "Vô tội"}, {en: "Civil", vi: "Dân sự"}
+            ]
+        },
+        {
+            id: 22, title: "Giao tiếp – Truyền thông", icon: "📡",
+            words: [
+                {en: "Communication", vi: "Giao tiếp"}, {en: "Conversation", vi: "Cuộc trò chuyện"}, {en: "Dialogue", vi: "Đối thoại"},
+                {en: "Language", vi: "Ngôn ngữ"}, {en: "Verbal", vi: "Bằng lời"}, {en: "Nonverbal", vi: "Không lời"},
+                {en: "Gesture", vi: "Cử chỉ"}, {en: "Expression", vi: "Biểu hiện"}, {en: "Listening", vi: "Lắng nghe"},
+                {en: "Speaking", vi: "Nói chuyện"}, {en: "Writing", vi: "Viết"}, {en: "Presentation", vi: "Thuyết trình"},
+                {en: "Media", vi: "Phương tiện truyền thông"}, {en: "News", vi: "Tin tức"}, {en: "Interview", vi: "Phỏng vấn"},
+                {en: "Broadcast", vi: "Phát sóng"}, {en: "Advertisement", vi: "Quảng cáo"}, {en: "Social media", vi: "Mạng xã hội"},
+                {en: "Public relations", vi: "Quan hệ công chúng"}, {en: "Feedback", vi: "Phản hồi"}
+            ]
+        },
+        {
+            id: 23, title: "Cuộc sống hàng ngày", icon: "🌅",
+            words: [
+                {en: "Daily", vi: "Hàng ngày"}, {en: "Routine", vi: "Lịch trình"}, {en: "Morning", vi: "Buổi sáng"},
+                {en: "Afternoon", vi: "Buổi chiều"}, {en: "Evening", vi: "Buổi tối"}, {en: "Night", vi: "Buổi đêm"},
+                {en: "Breakfast", vi: "Bữa sáng"}, {en: "Lunch", vi: "Bữa trưa"}, {en: "Dinner", vi: "Bữa tối"},
+                {en: "Work", vi: "Công việc"}, {en: "Study", vi: "Học tập"}, {en: "Exercise", vi: "Tập luyện"},
+                {en: "Relax", vi: "Thư giãn"}, {en: "Family", vi: "Gia đình"}, {en: "Friends", vi: "Bạn bè"},
+                {en: "Hobbies", vi: "Sở thích"}, {en: "Entertainment", vi: "Giải trí"}, {en: "Shopping", vi: "Mua sắm"},
+                {en: "Relaxation", vi: "Sự thư giãn"}, {en: "Sleep", vi: "Giấc ngủ"}
+            ]
+        },
+        {
+            id: 24, title: "Cảm xúc – Tâm lý", icon: "🧠",
+            words: [
+                {en: "Emotion", vi: "Cảm xúc"}, {en: "Feeling", vi: "Cảm giác"}, {en: "Happy", vi: "Hạnh phúc"},
+                {en: "Sad", vi: "Buồn"}, {en: "Angry", vi: "Tức giận"}, {en: "Excited", vi: "Hào hứng"},
+                {en: "Nervous", vi: "Lo lắng"}, {en: "Surprised", vi: "Ngạc nhiên"}, {en: "Fear", vi: "Sợ hãi"},
+                {en: "Love", vi: "Tình yêu"}, {en: "Hate", vi: "Ghét bỏ"}, {en: "Joy", vi: "Vui mừng"},
+                {en: "Sorrow", vi: "Đau buồn"}, {en: "Anxiety", vi: "Lo lắng"}, {en: "Confidence", vi: "Tự tin"},
+                {en: "Stress", vi: "Căng thẳng"}, {en: "Loneliness", vi: "Cô đơn"}, {en: "Disgust", vi: "Chán ghét"},
+                {en: "Happiness", vi: "Hạnh phúc"}
+            ]
+        },
+        {
+            id: 25, title: "Tình yêu – Mối quan hệ", icon: "❤️",
+            words: [
+                {en: "Love", vi: "Tình yêu"}, {en: "Relationship", vi: "Mối quan hệ"}, {en: "Romance", vi: "Tình cảm"},
+                {en: "Partner", vi: "Đối tác"}, {en: "Couple", vi: "Cặp đôi"}, {en: "Date", vi: "Hẹn hò"},
+                {en: "Marriage", vi: "Hôn nhân"}, {en: "Wedding", vi: "Đám cưới"}, {en: "Engaged", vi: "Đính hôn"},
+                {en: "Breakup", vi: "Chia tay"}, {en: "Heart", vi: "Trái tim"}, {en: "Passion", vi: "Đam mê"},
+                {en: "Trust", vi: "Lòng tin"}, {en: "Loyalty", vi: "Sự trung thành"}, {en: "Jealousy", vi: "Ghen tỵ"},
+                {en: "Intimacy", vi: "Sự thân mật"}, {en: "Commitment", vi: "Sự cam kết"}, {en: "Support", vi: "Sự hỗ trợ"},
+                {en: "Respect", vi: "Sự tôn trọng"}, {en: "Understanding", vi: "Sự hiểu biết"}
+            ]
+        }
+    ];
 
-    // Hàm tự động nạp dữ liệu lên Firestore
     window.seedDatabase = async function() {
         try {
             for (let topic of defaultSeedTopics) {
                 await setDoc(doc(db, "topics", `topic_${topic.id}`), topic);
             }
-            alert("Nạp dữ liệu tự động lên Firebase thành công! 🎉 Hãy bấm OK để tải lại lộ trình.");
+            alert("Nạp dữ liệu 25 chủ đề thành công! 🎉 Hãy bấm OK để tải lại lộ trình.");
             loadTopicsFromFirebase();
         } catch (error) {
             alert("Lỗi khi nạp dữ liệu: " + error.message);
@@ -601,7 +550,6 @@
         document.getElementById("stat-streak").innerText = userStreak;
     }
 
-    // Hàm tải dữ liệu động từ Firebase Firestore
     async function loadTopicsFromFirebase() {
         try {
             const querySnapshot = await getDocs(collection(db, "topics"));
@@ -620,7 +568,6 @@
         }
     }
 
-    // Render cây kỹ năng Zic-zac
     function renderSkillTree() {
         const treeContainer = document.getElementById("skill-tree-nodes");
         treeContainer.innerHTML = "";
@@ -639,8 +586,9 @@
             rowDiv.className = `node-row ${rowClass}`;
 
             let btn = document.createElement("button");
-            btn.className = index === 3 ? "node-btn chest" : "node-btn";
+            btn.className = index % 4 === 3 ? "node-btn chest" : "node-btn";
             btn.innerHTML = topic.icon;
+            btn.title = topic.title; 
             
             if(index === 0) {
                 let bubble = document.createElement("div");
@@ -655,7 +603,6 @@
         });
     }
 
-    // --- LOGIC BÀI HỌC ---
     let currentTopic = null;
     let currentQuestions = [];
     let questionIdx = 0;
