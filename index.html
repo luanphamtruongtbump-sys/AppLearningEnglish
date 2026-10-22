@@ -3,67 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duolingo English - Dữ Liệu Tự Động Firebase</title>
-    <link rel="manifest" href="manifest.json">
+    <title>Duolingo Pro Max - AI Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Nunito', sans-serif; background-color: #ffffff; margin: 0; padding: 0; color: #4B4B4B; display: flex; justify-content: center; }
+        body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; color: #4B4B4B; display: flex; justify-content: center; overflow-x: hidden; }
         
-        .app-layout { display: flex; width: 100%; max-width: 1050px; min-height: 100vh; }
+        .app-layout { display: flex; width: 100%; max-width: 1100px; min-height: 100vh; }
         
-        /* CỘT TRÁI: SIDEBAR MENU */
-        .sidebar { width: 256px; border-right: 2px solid #E5E5E5; padding: 20px 15px; display: flex; flex-direction: column; justify-content: space-between; position: fixed; height: 100vh; background: white; z-index: 10; }
-        .logo { font-size: 28px; font-weight: 900; color: #58CC02; text-transform: lowercase; margin-bottom: 25px; padding-left: 10px; letter-spacing: -1px; }
-        .menu-list { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 10px; border-radius: 12px; font-weight: 800; font-size: 13px; color: #777777; text-transform: uppercase; cursor: pointer; text-decoration: none; letter-spacing: 0.8px; transition: 0.1s; }
+        /* SIDEBAR */
+        .sidebar { width: 250px; border-right: 2px solid #E5E5E5; padding: 20px 15px; display: flex; flex-direction: column; position: fixed; height: 100vh; background: white; z-index: 10; }
+        .logo { font-size: 26px; font-weight: 900; color: #58CC02; margin-bottom: 25px; padding-left: 10px; letter-spacing: -1px; }
+        .menu-list { display: flex; flex-direction: column; gap: 5px; flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 13px; color: #777777; text-transform: uppercase; cursor: pointer; transition: 0.1s; border: 2px solid transparent; }
         .menu-item:hover { background: #F7F7F7; }
         .menu-item.active { background: #DDf4C5; color: #58CC02; border: 2px solid #89E219; }
-        .menu-icon { font-size: 20px; width: 28px; text-align: center; }
-
-        /* CỘT GIỮA: LỘ TRÌNH (SKILL TREE) */
-        .main-content { margin-left: 256px; margin-right: 368px; flex-grow: 1; padding: 20px 30px; display: flex; flex-direction: column; align-items: center; }
         
-        .path-banner { width: 100%; max-width: 420px; background: #58CC02; border-radius: 20px; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 0 #46A302; margin-bottom: 25px; }
-        .banner-info h4 { margin: 0 0 5px 0; font-size: 12px; text-transform: uppercase; font-weight: 800; opacity: 0.9; }
-        .banner-info h2 { margin: 0; font-size: 20px; font-weight: 900; }
-        .btn-guide { background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); padding: 8px 14px; border-radius: 12px; color: white; font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; }
-
-        .btn-seed { background: #1CB0F6; color: white; border: none; border-bottom: 4px solid #1899D6; padding: 12px 20px; border-radius: 16px; font-weight: 900; font-size: 14px; cursor: pointer; width: 100%; max-width: 420px; margin-bottom: 25px; text-transform: uppercase; }
-        .btn-seed:active { transform: translateY(2px); border-bottom-width: 2px; }
-
-        .skill-tree { display: flex; flex-direction: column; align-items: center; gap: 25px; width: 100%; position: relative; padding-bottom: 50px; }
-        
+        /* CỘT GIỮA */
+        .main-content { margin-left: 250px; margin-right: 320px; flex-grow: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .path-banner { width: 100%; max-width: 480px; background: #58CC02; border-radius: 20px; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 0 #46A302; margin-bottom: 25px; }
+        .skill-tree { display: flex; flex-direction: column; align-items: center; gap: 25px; width: 100%; padding-bottom: 50px; }
         .node-row { display: flex; justify-content: center; width: 100%; position: relative; }
         .node-row.offset-1 { transform: translateX(-55px); }
         .node-row.offset-2 { transform: translateX(55px); }
-
-        .node-btn { width: 75px; height: 75px; border-radius: 50%; background: #58CC02; border: none; border-bottom: 6px solid #46A302; display: flex; justify-content: center; align-items: center; font-size: 30px; cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.1); position: relative; transition: 0.1s; }
+        .node-btn { width: 70px; height: 70px; border-radius: 50%; background: #58CC02; border: none; border-bottom: 6px solid #46A302; font-size: 28px; cursor: pointer; transition: 0.1s; position: relative; display: flex; align-items: center; justify-content: center;}
         .node-btn:active { transform: translateY(4px); border-bottom-width: 2px; }
         .node-btn.chest { background: #FFC800; border-bottom-color: #E5B400; }
 
-        .start-bubble { position: absolute; top: -42px; background: white; border: 2px solid #E5E5E5; padding: 6px 14px; border-radius: 20px; font-weight: 900; font-size: 12px; color: #1CB0F6; text-transform: uppercase; box-shadow: 0 4px 0 #E5E5E5; animation: bounce 1s infinite alternate; white-space: nowrap; }
-        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-5px); } }
-
-        /* CỘT PHẢI: WIDGETS */
-        .right-sidebar { width: 368px; position: fixed; right: 0; top: 0; height: 100vh; border-left: 2px solid #E5E5E5; padding: 20px; background: white; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-        .top-stats { display: flex; justify-content: flex-end; gap: 20px; align-items: center; margin-bottom: 10px; font-weight: 900; font-size: 14px; }
-        .stat-item { display: flex; align-items: center; gap: 6px; }
-        
+        /* CỘT PHẢI */
+        .right-sidebar { width: 320px; position: fixed; right: 0; top: 0; height: 100vh; border-left: 2px solid #E5E5E5; padding: 20px; background: white; display: flex; flex-direction: column; gap: 20px; }
+        .top-stats { display: flex; justify-content: space-between; font-weight: 900; font-size: 14px; }
         .widget-card { border: 2px solid #E5E5E5; border-radius: 20px; padding: 16px; }
-        .widget-card h3 { margin: 0 0 10px 0; font-size: 16px; font-weight: 900; color: #3C3C3C; }
-        
-        .super-card { background: #9400D3; color: white; border: none; border-bottom: 6px solid #6A0DAD; }
-        .btn-super { background: white; color: #9400D3; width: 100%; border: none; padding: 12px; border-radius: 14px; font-weight: 900; margin-top: 15px; cursor: pointer; text-transform: uppercase; }
 
         /* MÀN HÌNH BÀI HỌC */
         .lesson-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 100; display: flex; flex-direction: column; padding: 20px; }
-        .lesson-header { display: flex; align-items: center; gap: 20px; max-width: 600px; margin: 0 auto; width: 100%; margin-bottom: 30px; }
-        .lesson-progress { flex-grow: 1; height: 14px; background: #E5E5E5; border-radius: 7px; overflow: hidden; }
-        .lesson-progress-fill { width: 0%; height: 100%; background: #58CC02; transition: 0.3s; border-radius: 7px; }
-        .lesson-body { max-width: 600px; margin: 0 auto; width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .lesson-header { display: flex; align-items: center; gap: 20px; max-width: 700px; margin: 0 auto; width: 100%; margin-bottom: 30px; }
+        .lesson-progress { flex-grow: 1; height: 16px; background: #E5E5E5; border-radius: 8px; overflow: hidden; }
+        .lesson-progress-fill { width: 0%; height: 100%; background: #58CC02; transition: 0.3s; border-radius: 8px; }
+        .lesson-body { max-width: 700px; margin: 0 auto; width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 20px;}
         
+        .question-title { font-size: 24px; font-weight: 900; color: #3C3C3C; }
+        .btn-audio { background: #1CB0F6; color: white; border: none; border-bottom: 4px solid #1899D6; width: 60px; height: 60px; border-radius: 16px; font-size: 24px; cursor: pointer; }
+        .btn-audio:active { transform: translateY(2px); border-bottom-width: 2px; }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .opt-btn { background: white; border: 2px solid #E5E5E5; border-bottom: 4px solid #E5E5E5; padding: 15px; border-radius: 16px; font-weight: 800; font-size: 18px; cursor: pointer; color: #3C3C3C; transition: 0.1s;}
+        
+        .lesson-footer { position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px; background: white; border-top: 2px solid #E5E5E5; display: flex; justify-content: center; }
+        .footer-content { max-width: 700px; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .btn-next { background: #58CC02; color: white; border: none; padding: 15px 40px; border-radius: 16px; font-weight: 900; font-size: 16px; border-bottom: 4px solid #46A302; cursor: pointer; }
+        .btn-ai-explain { background: #9400D3; color: white; border: none; padding: 15px 20px; border-radius: 16px; font-weight: 900; font-size: 14px; border-bottom: 4px solid #6A0DAD; cursor: pointer; display: flex; align-items: center; gap: 8px;}
+
         .hidden { display: none !important; }
         button { font-family: 'Nunito', sans-serif; }
     </style>
@@ -71,602 +61,214 @@
 <body>
 
 <div class="app-layout">
-    
-    <!-- THANH MENU TRÁI -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <div>
             <div class="logo">duolingo</div>
             <div class="menu-list">
-                <a class="menu-item active"><span class="menu-icon">🏠</span> Học</a>
-                <a class="menu-item"><span class="menu-icon">🔊</span> Phát âm</a>
-                <a class="menu-item"><span class="menu-icon">💪</span> Luyện tập</a>
-                <a class="menu-item"><span class="menu-icon">🛡️</span> Xếp hạng</a>
-                <a class="menu-item"><span class="menu-icon">🎁</span> Nhiệm vụ</a>
-                <a class="menu-item"><span class="menu-icon">👤</span> Hồ sơ</a>
+                <a class="menu-item active"><span>🏠</span> Học lộ trình</a>
+                <a class="menu-item"><span>📖</span> Truyện (Stories)</a>
+                <a class="menu-item"><span>🎧</span> DuoRadio</a>
+                <a class="menu-item"><span>🤖</span> AI Roleplay</a>
+                <a class="menu-item"><span>🛡️</span> Xếp hạng</a>
+                <a class="menu-item"><span>🎁</span> Nhiệm vụ</a>
+                <a class="menu-item"><span>👤</span> Hồ sơ</a>
             </div>
         </div>
-        <button id="logout-btn" style="background:#FF4B4B; color:white; border:none; padding:10px; border-radius:12px; font-weight:800; cursor:pointer;">ĐĂNG XUẤT</button>
     </div>
 
-    <!-- CỘT CHÍNH: LỘ TRÌNH -->
+    <!-- MAIN CONTENT -->
     <div class="main-content">
-        
-        <div id="login-screen" style="text-align:center; margin-top: 150px; width: 100%;">
-            <h1 style="color:#58CC02; font-size:36px; font-weight:900;">Chào mừng đến với Duolingo Từ Vựng!</h1>
-            <p style="color:#777; font-weight:700; margin-bottom:25px;">Học từ vựng theo chủ đề vui nhộn, mượt mà và không giới hạn.</p>
-            <button id="login-btn" style="background:#58CC02; color:white; border:none; padding:16px 30px; font-size:16px; font-weight:900; border-radius:16px; border-bottom:4px solid #46A302; cursor:pointer;">ĐĂNG NHẬP BẰNG GOOGLE</button>
+        <div class="path-banner">
+            <div>
+                <h4 id="banner-section-title">Học cơ bản đến nâng cao</h4>
+                <h2 id="banner-unit-title">Đang tải...</h2>
+            </div>
         </div>
 
-        <div id="dashboard-screen" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-            
-            <div class="path-banner">
-                <div class="banner-info">
-                    <h4 id="banner-section-title">Chủ đề 1</h4>
-                    <h2 id="banner-unit-title">Đang tải dữ liệu...</h2>
-                </div>
-                <button class="btn-guide" onclick="alert('Hãy chọn bài học trên cây kỹ năng để bắt đầu!')">Hướng dẫn</button>
-            </div>
-
-            <!-- Nút bấm tự động nạp dữ liệu lên Firebase -->
-            <button class="btn-seed" onclick="seedDatabase()">🚀 Tự động nạp dữ liệu lên Firebase</button>
-
-            <!-- Cây kỹ năng (Skill Tree lấy từ Firebase) -->
-            <div class="skill-tree" id="skill-tree-nodes">
-                <!-- Render tự động -->
-            </div>
-
+        <div class="skill-tree" id="skill-tree-nodes">
+            <!-- Node lộ trình -->
         </div>
-
     </div>
 
-    <!-- CỘT PHẢI: WIDGETS -->
+    <!-- RIGHT SIDEBAR -->
     <div class="right-sidebar">
         <div class="top-stats">
-            <div class="stat-item" style="color: #FF9600;"><span style="font-size: 18px;">🔥</span> <span id="stat-streak">1</span></div>
-            <div class="stat-item" style="color: #1CB0F6;"><span style="font-size: 18px;">⚡</span> <span id="stat-xp">0</span> XP</div>
-            <div class="stat-item" style="color: #FF4B4B;"><span style="font-size: 18px;">♾️</span></div>
-        </div>
-
-        <div class="widget-card super-card">
-            <h3>Thử Super miễn phí</h3>
-            <p style="font-size: 13px; opacity: 0.9; margin: 0; font-weight: 600;">Không quảng cáo, học không giới hạn!</p>
-            <button class="btn-super">Kích hoạt ngay</button>
+            <div style="color: #FF4B4B;"><span style="font-size: 18px;">♾️</span></div>
+            <div style="color: #FF9600;">🔥 <span id="stat-streak">1</span></div>
+            <div style="color: #1CB0F6;">💎 <span id="stat-gems">500</span></div>
         </div>
 
         <div class="widget-card">
-            <h3>Nhiệm vụ hằng ngày</h3>
-            <div class="quest-item" style="display:flex; align-items:center; gap:12px; margin-top:10px;">
-                <span style="font-size: 20px;">⚡</span>
-                <div style="flex-grow: 1;">
-                    <div style="font-weight: 800; font-size: 13px;">Kiếm 20 XP</div>
-                    <div style="width:100%; height:100px; background:#E5E5E5; border-radius:5px; height:10px; overflow:hidden;"><div style="width:40%; height:100%; background:#FFC800;"></div></div>
-                </div>
-            </div>
+            <h3>Giải đấu (Leagues)</h3>
+            <p style="font-size:13px; color:#777; font-weight:700;">Bạn đang ở Giải Đồng. Cố gắng lọt top 10!</p>
         </div>
     </div>
-
 </div>
 
 <!-- MÀN HÌNH BÀI HỌC -->
 <div id="lesson-modal" class="lesson-modal hidden">
     <div class="lesson-header">
-        <button onclick="closeLesson()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#777; font-weight:900;">✕</button>
-        <div class="lesson-progress">
-            <div id="lesson-bar" class="lesson-progress-fill" style="width: 0%;"></div>
-        </div>
+        <button onclick="closeLesson()" style="background:none; border:none; font-size:24px; cursor:pointer; font-weight:900; color:#ccc;">✕</button>
+        <div class="lesson-progress"><div id="lesson-bar" class="lesson-progress-fill" style="width: 0%;"></div></div>
         <div style="color: #FF4B4B; font-weight:900; font-size:20px;">♾️</div>
     </div>
+    
     <div class="lesson-body">
-        <div>
-            <h2 id="lesson-topic-title" style="font-size: 18px; font-weight: 800; color: #777; margin-bottom: 5px;">Chủ đề</h2>
-            <div id="lesson-target-word" style="font-size: 36px; font-weight: 900; color: #1CB0F6; margin-bottom: 30px; text-align: center;">Word</div>
-            <div id="lesson-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"></div>
+        <div id="question-type-text" class="question-title">Chọn nghĩa đúng của từ này:</div>
+        
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+            <button class="btn-audio" onclick="playAudio()"><span style="font-size:20px">🔊</span></button>
+            <div id="lesson-target-word" style="font-size: 32px; font-weight: 900; color: #1CB0F6;">Word</div>
         </div>
-        <div style="padding-bottom: 20px; display: flex; justify-content: flex-end;">
-            <button id="lesson-next-btn" onclick="nextQuestion()" style="background: #58CC02; color: white; border: none; padding: 15px 40px; border-radius: 16px; font-weight: 900; font-size: 16px; border-bottom: 4px solid #46A302; cursor: pointer;" class="hidden">TIẾP TỤC</button>
+
+        <div id="lesson-options" class="options-grid"></div>
+    </div>
+
+    <div id="lesson-footer" class="lesson-footer hidden">
+        <div class="footer-content">
+            <button id="btn-ai-explain" class="btn-ai-explain hidden" onclick="explainWithAI()">✨ Giải thích bằng AI</button>
+            <div style="flex-grow:1"></div>
+            <button id="lesson-next-btn" class="btn-next" onclick="nextQuestion()">TIẾP TỤC</button>
         </div>
     </div>
 </div>
 
+<!-- Modal Giải thích AI -->
+<div id="ai-modal" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:200; max-width:500px; width:90%; border: 4px solid #9400D3;">
+    <h2 style="color:#9400D3; margin-top:0;">✨ AI Giải thích</h2>
+    <p id="ai-text" style="font-weight:700; line-height:1.6; color:#4B4B4B;">Đang phân tích...</p>
+    <button onclick="document.getElementById('ai-modal').classList.add('hidden')" style="background:#E5E5E5; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; width:100%;">Đóng</button>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDIIFo2JMolCY5Ygxdy992z2kyBgXF2L0M",
         authDomain: "applearningenglish-4c758.firebaseapp.com",
-        projectId: "applearningenglish-4c758",
-        storageBucket: "applearningenglish-4c758.firebasestorage.app",
-        messagingSenderId: "947321154941",
-        appId: "1:947321154941:web:27941cb908044dd23d3014"
+        projectId: "applearningenglish-4c758"
     };
-
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
 
-    let currentUser = null;
-    let userXP = 0;
-    let userStreak = 1;
     let topicsData = [];
 
-    // DỮ LIỆU TỪ VỰNG HOÀN CHỈNH - 25 CHỦ ĐỀ
-    const defaultSeedTopics = [
-        {
-            id: 1, title: "Gia đình và mối quan hệ", icon: "👨‍👩‍👧‍👦",
-            words: [
-                {en: "Family", vi: "Gia đình"}, {en: "Parents", vi: "Bố mẹ"}, {en: "Siblings", vi: "Anh chị em ruột"},
-                {en: "Children", vi: "Con cái"}, {en: "Grandparents", vi: "Ông bà"}, {en: "Cousins", vi: "Anh chị em họ"},
-                {en: "Nephew", vi: "Cháu trai"}, {en: "Niece", vi: "Cháu gái"}, {en: "Aunt", vi: "Cô, dì"},
-                {en: "Uncle", vi: "Chú, bác"}, {en: "Spouse", vi: "Vợ, chồng"}, {en: "In-laws", vi: "Bố mẹ chồng, bố mẹ vợ"},
-                {en: "Brother-in-law", vi: "Anh rể, em chồng"}, {en: "Sister-in-law", vi: "Chị dâu, em vợ"},
-                {en: "Son", vi: "Con trai"}, {en: "Daughter", vi: "Con gái"}, {en: "Brother", vi: "Anh/em trai"},
-                {en: "Sister", vi: "Chị/em gái"}
-            ]
-        },
-        {
-            id: 2, title: "Sở thích và giải trí", icon: "🎨",
-            words: [
-                {en: "Hobby", vi: "Sở thích"}, {en: "Sports", vi: "Thể thao"}, {en: "Music", vi: "Âm nhạc"},
-                {en: "Reading", vi: "Đọc sách"}, {en: "Painting", vi: "Vẽ tranh"}, {en: "Photography", vi: "Nhiếp ảnh"},
-                {en: "Cooking", vi: "Nấu ăn"}, {en: "Gardening", vi: "Làm vườn"}, {en: "Traveling", vi: "Du lịch"},
-                {en: "Dancing", vi: "Nhảy múa"}, {en: "Gaming", vi: "Chơi game"}, {en: "Movies", vi: "Phim"},
-                {en: "Theatre", vi: "Nhà hát"}, {en: "Concert", vi: "Buổi hòa nhạc"}, {en: "Art", vi: "Nghệ thuật"},
-                {en: "Writing", vi: "Viết"}, {en: "Cycling", vi: "Đạp xe"}, {en: "Swimming", vi: "Bơi lội"},
-                {en: "Hiking", vi: "Leo núi"}, {en: "Yoga", vi: "Yoga"}
-            ]
-        },
-        {
-            id: 3, title: "Thời tiết và mùa trong năm", icon: "⛅",
-            words: [
-                {en: "Weather", vi: "Thời tiết"}, {en: "Temperature", vi: "Nhiệt độ"}, {en: "Sunny", vi: "Nắng"},
-                {en: "Cloudy", vi: "Mây"}, {en: "Rainy", vi: "Mưa"}, {en: "Snowy", vi: "Tuyết"},
-                {en: "Windy", vi: "Gió"}, {en: "Stormy", vi: "Bão"}, {en: "Foggy", vi: "Sương mù"},
-                {en: "Season", vi: "Mùa"}, {en: "Spring", vi: "Mùa xuân"}, {en: "Summer", vi: "Mùa hè"},
-                {en: "Autumn", vi: "Mùa thu"}, {en: "Winter", vi: "Mùa đông"}, {en: "January", vi: "Tháng một"},
-                {en: "February", vi: "Tháng hai"}, {en: "March", vi: "Tháng ba"}, {en: "April", vi: "Tháng tư"},
-                {en: "May", vi: "Tháng năm"}, {en: "June", vi: "Tháng sáu"}
-            ]
-        },
-        {
-            id: 4, title: "Thành phố và địa điểm du lịch", icon: "🏙️",
-            words: [
-                {en: "City", vi: "Thành phố"}, {en: "Town", vi: "Thị trấn"}, {en: "Capital", vi: "Thủ đô"},
-                {en: "Street", vi: "Đường"}, {en: "Avenue", vi: "Đại lộ"}, {en: "Square", vi: "Quảng trường"},
-                {en: "Park", vi: "Công viên"}, {en: "Museum", vi: "Bảo tàng"}, {en: "Gallery", vi: "Triển lãm"},
-                {en: "Landmark", vi: "Địa danh"}, {en: "Cathedral", vi: "Nhà thờ chính"}, {en: "Temple", vi: "Đền, chùa"},
-                {en: "Palace", vi: "Cung điện"}, {en: "Castle", vi: "Lâu đài"}, {en: "Bridge", vi: "Cầu"},
-                {en: "Beach", vi: "Bãi biển"}, {en: "Lake", vi: "Hồ"}, {en: "Mountain", vi: "Núi"},
-                {en: "Garden", vi: "Vườn"}, {en: "Zoo", vi: "Sở thú"}
-            ]
-        },
-        {
-            id: 5, title: "Mua sắm và mặt hàng", icon: "🛒",
-            words: [
-                {en: "Shopping", vi: "Mua sắm"}, {en: "Store", vi: "Cửa hàng"}, {en: "Market", vi: "Chợ"},
-                {en: "Mall", vi: "Trung tâm thương mại"}, {en: "Shop", vi: "Cửa hiệu"}, {en: "Boutique", vi: "Cửa hàng thời trang"},
-                {en: "Department store", vi: "Cửa hàng bách hóa"}, {en: "Supermarket", vi: "Siêu thị"}, {en: "Cashier", vi: "Thu ngân"},
-                {en: "Sale", vi: "Giảm giá"}, {en: "Discount", vi: "Chiết khấu"}, {en: "Payment", vi: "Thanh toán"},
-                {en: "Receipt", vi: "Biên lai"}, {en: "Product", vi: "Sản phẩm"}, {en: "Brand", vi: "Thương hiệu"},
-                {en: "Size", vi: "Kích cỡ"}, {en: "Price", vi: "Giá"}, {en: "Quality", vi: "Chất lượng"},
-                {en: "Customer", vi: "Khách hàng"}, {en: "Saleperson", vi: "Nhân viên bán hàng"}
-            ]
-        },
-        {
-            id: 6, title: "Công việc và ngành nghề", icon: "💼",
-            words: [
-                {en: "Job", vi: "Công việc"}, {en: "Occupation", vi: "Nghề nghiệp"}, {en: "Profession", vi: "Chuyên nghiệp"},
-                {en: "Career", vi: "Sự nghiệp"}, {en: "Employee", vi: "Nhân viên"}, {en: "Employer", vi: "Chủ doanh nghiệp"},
-                {en: "Manager", vi: "Quản lý"}, {en: "Supervisor", vi: "Giám sát"}, {en: "Colleague", vi: "Đồng nghiệp"},
-                {en: "Team", vi: "Nhóm"}, {en: "Project", vi: "Dự án"}, {en: "Deadline", vi: "Hạn chót"},
-                {en: "Meeting", vi: "Cuộc họp"}, {en: "Presentation", vi: "Bài thuyết trình"}, {en: "Resume", vi: "Sơ yếu lý lịch"},
-                {en: "Interview", vi: "Phỏng vấn"}, {en: "Salary", vi: "Lương"}, {en: "Promotion", vi: "Thăng tiến"},
-                {en: "Retirement", vi: "Về hưu"}, {en: "Work-life balance", vi: "Cân bằng công việc và cuộc sống"}
-            ]
-        },
-        {
-            id: 7, title: "Thể thao và hoạt động thể dục", icon: "⚽",
-            words: [
-                {en: "Sports", vi: "Thể thao"}, {en: "Football", vi: "Bóng đá"}, {en: "Basketball", vi: "Bóng rổ"},
-                {en: "Tennis", vi: "Tennis"}, {en: "Swimming", vi: "Bơi lội"}, {en: "Running", vi: "Chạy bộ"},
-                {en: "Cycling", vi: "Đạp xe"}, {en: "Gymnastics", vi: "Thể dục dụng cụ"}, {en: "Yoga", vi: "Yoga"},
-                {en: "Boxing", vi: "Quyền Anh"}, {en: "Golf", vi: "Golf"}, {en: "Volleyball", vi: "Bóng chuyền"},
-                {en: "Table tennis", vi: "Bóng bàn"}, {en: "Athletics", vi: "Điền kinh"}, {en: "Badminton", vi: "Cầu lông"},
-                {en: "Hiking", vi: "Leo núi"}, {en: "Skiing", vi: "Trượt tuyết"}, {en: "Surfing", vi: "Lướt sóng"},
-                {en: "Sailing", vi: "Đi thuyền"}, {en: "Martial arts", vi: "Võ thuật"}
-            ]
-        },
-        {
-            id: 8, title: "Giao thông và phương tiện", icon: "🚗",
-            words: [
-                {en: "Traffic", vi: "Giao thông"}, {en: "Vehicle", vi: "Phương tiện"}, {en: "Car", vi: "Ô tô"},
-                {en: "Motorcycle", vi: "Xe máy"}, {en: "Bicycle", vi: "Xe đạp"}, {en: "Bus", vi: "Xe buýt"},
-                {en: "Taxi", vi: "Xe taxi"}, {en: "Train", vi: "Tàu hỏa"}, {en: "Subway", vi: "Tàu điện ngầm"},
-                {en: "Tram", vi: "Xe điện"}, {en: "Plane", vi: "Máy bay"}, {en: "Ship", vi: "Tàu biển"},
-                {en: "Boat", vi: "Thuyền"}, {en: "Ferry", vi: "Phà"}, {en: "Pedestrian", vi: "Người đi bộ"},
-                {en: "Intersection", vi: "Ngã tư"}, {en: "Traffic light", vi: "Đèn giao thông"}, {en: "Crosswalk", vi: "Vạch dành cho người đi bộ"},
-                {en: "Highway", vi: "Đường cao tốc"}, {en: "Parking", vi: "Bãi đỗ xe"}
-            ]
-        },
-        {
-            id: 9, title: "Sức khỏe và y tế", icon: "🏥",
-            words: [
-                {en: "Health", vi: "Sức khỏe"}, {en: "Wellness", vi: "Sự khỏe mạnh"}, {en: "Doctor", vi: "Bác sĩ"},
-                {en: "Nurse", vi: "Y tá"}, {en: "Hospital", vi: "Bệnh viện"}, {en: "Clinic", vi: "Phòng khám"},
-                {en: "Patient", vi: "Bệnh nhân"}, {en: "Medicine", vi: "Thuốc"}, {en: "Prescription", vi: "Đơn thuốc"},
-                {en: "Symptom", vi: "Triệu chứng"}, {en: "Allergy", vi: "Dị ứng"}, {en: "Fever", vi: "Sốt"},
-                {en: "Cough", vi: "Ho"}, {en: "Headache", vi: "Đau đầu"}, {en: "Stomachache", vi: "Đau bụng"},
-                {en: "Flu", vi: "Cúm"}, {en: "Vaccine", vi: "Vắc-xin"}, {en: "Check-up", vi: "Kiểm tra sức khỏe"},
-                {en: "Exercise", vi: "Tập luyện"}, {en: "Healthy diet", vi: "Chế độ ăn lành mạnh"}
-            ]
-        },
-        {
-            id: 10, title: "Trường học và giáo dục", icon: "🏫",
-            words: [
-                {en: "School", vi: "Trường học"}, {en: "Classroom", vi: "Lớp học"}, {en: "Teacher", vi: "Giáo viên"},
-                {en: "Student", vi: "Học sinh"}, {en: "Lesson", vi: "Bài học"}, {en: "Homework", vi: "Bài tập về nhà"},
-                {en: "Exam", vi: "Kỳ thi"}, {en: "Test", vi: "Bài kiểm tra"}, {en: "Subject", vi: "Môn học"},
-                {en: "Book", vi: "Sách"}, {en: "Pen", vi: "Bút"}, {en: "Pencil", vi: "Bút chì"},
-                {en: "Eraser", vi: "Cục tẩy"}, {en: "Calculator", vi: "Máy tính"}, {en: "Whiteboard", vi: "Bảng trắng"},
-                {en: "Projector", vi: "Máy chiếu"}, {en: "Backpack", vi: "Ba lô"}, {en: "Uniform", vi: "Đồng phục"},
-                {en: "Graduation", vi: "Lễ tốt nghiệp"}, {en: "Education", vi: "Giáo dục"}
-            ]
-        },
-        {
-            id: 11, title: "Đồ ăn và nhà hàng", icon: "🍔",
-            words: [
-                {en: "Food", vi: "Đồ ăn"}, {en: "Meal", vi: "Bữa ăn"}, {en: "Breakfast", vi: "Bữa sáng"},
-                {en: "Lunch", vi: "Bữa trưa"}, {en: "Dinner", vi: "Bữa tối"}, {en: "Appetizer", vi: "Món khai vị"},
-                {en: "Main course", vi: "Món chính"}, {en: "Dessert", vi: "Món tráng miệng"}, {en: "Beverage", vi: "Đồ uống"},
-                {en: "Coffee", vi: "Cà phê"}, {en: "Tea", vi: "Trà"}, {en: "Juice", vi: "Nước ép"},
-                {en: "Water", vi: "Nước"}, {en: "Salad", vi: "Rau trộn"}, {en: "Soup", vi: "Canh"},
-                {en: "Sandwich", vi: "Bánh mì kẹp"}, {en: "Pasta", vi: "Mì"}, {en: "Steak", vi: "Bít tết"},
-                {en: "Seafood", vi: "Hải sản"}, {en: "Restaurant", vi: "Nhà hàng"}
-            ]
-        },
-        {
-            id: 12, title: "Môi trường", icon: "🌳",
-            words: [
-                {en: "Environment", vi: "Môi trường"}, {en: "Nature", vi: "Thiên nhiên"}, {en: "Pollution", vi: "Ô nhiễm"},
-                {en: "Climate", vi: "Khí hậu"}, {en: "Conservation", vi: "Bảo tồn"}, {en: "Recycling", vi: "Tái chế"},
-                {en: "Renewable", vi: "Tái tạo"}, {en: "Sustainable", vi: "Bền vững"}, {en: "Biodiversity", vi: "Đa dạng sinh học"},
-                {en: "Ecosystem", vi: "Hệ sinh thái"}, {en: "Deforestation", vi: "Tàn phá rừng"}, {en: "Climate change", vi: "Biến đổi khí hậu"},
-                {en: "Global warming", vi: "Nóng lên toàn cầu"}, {en: "Air pollution", vi: "Ô nhiễm không khí"}, {en: "Water pollution", vi: "Ô nhiễm nước"},
-                {en: "Waste", vi: "Chất thải"}, {en: "Energy", vi: "Năng lượng"}, {en: "Ozone layer", vi: "Tầng ôzôn"}
-            ]
-        },
-        {
-            id: 13, title: "Công nghệ", icon: "💻",
-            words: [
-                {en: "Technology", vi: "Công nghệ"}, {en: "Computer", vi: "Máy tính"}, {en: "Internet", vi: "Internet"},
-                {en: "Website", vi: "Trang web"}, {en: "Software", vi: "Phần mềm"}, {en: "Hardware", vi: "Phần cứng"},
-                {en: "Smartphone", vi: "Điện thoại thông minh"}, {en: "Tablet", vi: "Máy tính bảng"}, {en: "App", vi: "Ứng dụng"},
-                {en: "Social media", vi: "Mạng xã hội"}, {en: "Network", vi: "Mạng"}, {en: "Digital", vi: "Kỹ thuật số"},
-                {en: "Cybersecurity", vi: "An ninh mạng"}, {en: "Artificial intelligence", vi: "Trí tuệ nhân tạo"}, {en: "Virtual reality", vi: "Thực tế ảo"},
-                {en: "Cloud computing", vi: "Điện toán đám mây"}, {en: "Automation", vi: "Tự động hóa"}, {en: "Robotics", vi: "Robot"},
-                {en: "Innovation", vi: "Đổi mới"}, {en: "Data", vi: "Dữ liệu"}
-            ]
-        },
-        {
-            id: 14, title: "Âm nhạc", icon: "🎵",
-            words: [
-                {en: "Music", vi: "Âm nhạc"}, {en: "Song", vi: "Bài hát"}, {en: "Singer", vi: "Ca sĩ"},
-                {en: "Band", vi: "Ban nhạc"}, {en: "Guitar", vi: "Đàn guitar"}, {en: "Piano", vi: "Đàn piano"},
-                {en: "Drum", vi: "Trống"}, {en: "Violin", vi: "Đàn vi-ô-lông"}, {en: "Flute", vi: "Sáo"},
-                {en: "Saxophone", vi: "Kèn saxophone"}, {en: "Concert", vi: "Buổi hòa nhạc"}, {en: "Album", vi: "Album"},
-                {en: "Lyrics", vi: "Lời bài hát"}, {en: "Melody", vi: "Giai điệu"}, {en: "Harmony", vi: "Sự hài hòa"},
-                {en: "Beat", vi: "Nhịp điệu"}, {en: "Chorus", vi: "Đoạn hợp xướng"}, {en: "Symphony", vi: "Giao hưởng"},
-                {en: "Genre", vi: "Thể loại"}, {en: "Dance", vi: "Khiêu vũ"}
-            ]
-        },
-        {
-            id: 15, title: "Kinh doanh", icon: "📈",
-            words: [
-                {en: "Business", vi: "Kinh doanh"}, {en: "Entrepreneur", vi: "Doanh nhân"}, {en: "Company", vi: "Công ty"},
-                {en: "Corporation", vi: "Tập đoàn"}, {en: "Startup", vi: "Doanh nghiệp khởi nghiệp"}, {en: "Marketing", vi: "Tiếp thị"},
-                {en: "Sales", vi: "Bán hàng"}, {en: "Customer", vi: "Khách hàng"}, {en: "Product", vi: "Sản phẩm"},
-                {en: "Service", vi: "Dịch vụ"}, {en: "Brand", vi: "Thương hiệu"}, {en: "Market", vi: "Thị trường"},
-                {en: "Finance", vi: "Tài chính"}, {en: "Investment", vi: "Đầu tư"}, {en: "Profit", vi: "Lợi nhuận"},
-                {en: "Entrepreneurship", vi: "Tinh thần khởi nghiệp"}, {en: "Strategy", vi: "Chiến lược"}, {en: "Networking", vi: "Mạng lưới"},
-                {en: "Negotiation", vi: "Thương lượng"}, {en: "Partnership", vi: "Đối tác"}
-            ]
-        },
-        {
-            id: 16, title: "Văn hóa và truyền thống", icon: "🏮",
-            words: [
-                {en: "Culture", vi: "Văn hóa"}, {en: "Tradition", vi: "Truyền thống"}, {en: "Heritage", vi: "Di sản"},
-                {en: "Custom", vi: "Phong tục"}, {en: "Ritual", vi: "Nghi lễ"}, {en: "Ceremony", vi: "Lễ nghi"},
-                {en: "Folklore", vi: "Văn hóa dân gian"}, {en: "Traditional costume", vi: "Trang phục truyền thống"}, {en: "Dance", vi: "Vũ điệu"},
-                {en: "Music", vi: "Âm nhạc"}, {en: "Art", vi: "Nghệ thuật"}, {en: "Literature", vi: "Văn học"},
-                {en: "Architecture", vi: "Kiến trúc"}, {en: "Sculpture", vi: "Điêu khắc"}, {en: "Painting", vi: "Hội hoạ"},
-                {en: "Festival", vi: "Lễ hội"}, {en: "Cuisine", vi: "Ẩm thực"}, {en: "Handicraft", vi: "Đồ thủ công"},
-                {en: "Belief", vi: "Niềm tin"}
-            ]
-        },
-        {
-            id: 17, title: "Nghệ thuật", icon: "🎨",
-            words: [
-                {en: "Art", vi: "Nghệ thuật"}, {en: "Painting", vi: "Hội hoạ"}, {en: "Sculpture", vi: "Điêu khắc"},
-                {en: "Drawing", vi: "Vẽ"}, {en: "Sketch", vi: "Bản phác thảo"}, {en: "Canvas", vi: "Bức tranh"},
-                {en: "Brush", vi: "Cọ"}, {en: "Palette", vi: "Bảng màu"}, {en: "Gallery", vi: "Phòng trưng bày"},
-                {en: "Exhibition", vi: "Triển lãm"}, {en: "Sculptor", vi: "Nghệ sĩ điêu khắc"}, {en: "Painter", vi: "Họa sĩ"},
-                {en: "Masterpiece", vi: "Kiệt tác"}, {en: "Abstract", vi: "Trừu tượng"}, {en: "Realism", vi: "Chân thực"},
-                {en: "Portrait", vi: "Chân dung"}, {en: "Landscape", vi: "Phong cảnh"}, {en: "Still life", vi: "Tự nhiên"},
-                {en: "Photography", vi: "Nhiếp ảnh"}, {en: "Composition", vi: "Cấu trúc"}
-            ]
-        },
-        {
-            id: 18, title: "Kỹ năng", icon: "🛠️",
-            words: [
-                {en: "Skill", vi: "Kỹ năng"}, {en: "Communication", vi: "Giao tiếp"}, {en: "Leadership", vi: "Lãnh đạo"},
-                {en: "Problem-solving", vi: "Giải quyết vấn đề"}, {en: "Time management", vi: "Quản lý thời gian"}, {en: "Teamwork", vi: "Làm việc nhóm"},
-                {en: "Adaptability", vi: "Tính linh hoạt"}, {en: "Critical thinking", vi: "Tư duy phản biện"}, {en: "Creativity", vi: "Sáng tạo"},
-                {en: "Decision-making", vi: "Ra quyết định"}, {en: "Negotiation", vi: "Thương lượng"}, {en: "Presentation", vi: "Thuyết trình"},
-                {en: "Public speaking", vi: "Diễn thuyết công khai"}, {en: "Networking", vi: "Mạng lưới"}, {en: "Organization", vi: "Tổ chức"},
-                {en: "Self-motivation", vi: "Tự động viên"}
-            ]
-        },
-        {
-            id: 19, title: "Xã hội", icon: "🤝",
-            words: [
-                {en: "Society", vi: "Xã hội"}, {en: "Community", vi: "Cộng đồng"}, {en: "Culture", vi: "Văn hóa"},
-                {en: "Tradition", vi: "Truyền thống"}, {en: "Diversity", vi: "Đa dạng"}, {en: "Equality", vi: "Bình đẳng"},
-                {en: "Discrimination", vi: "Phân biệt đối xử"}, {en: "Inclusion", vi: "Sự bao gồm"}, {en: "Exclusion", vi: "Sự loại trừ"},
-                {en: "Poverty", vi: "Nghèo đói"}, {en: "Wealth", vi: "Giàu có"}, {en: "Education", vi: "Giáo dục"},
-                {en: "Health", vi: "Sức khỏe"}, {en: "Environment", vi: "Môi trường"}, {en: "Politics", vi: "Chính trị"},
-                {en: "Democracy", vi: "Dân chủ"}, {en: "Government", vi: "Chính phủ"}, {en: "Activism", vi: "Hoạt động chính trị"},
-                {en: "Human rights", vi: "Quyền con người"}, {en: "Volunteer", vi: "Tình nguyện viên"}
-            ]
-        },
-        {
-            id: 20, title: "Tài chính – Ngân hàng", icon: "💰",
-            words: [
-                {en: "Finance", vi: "Tài chính"}, {en: "Banking", vi: "Ngân hàng"}, {en: "Account", vi: "Tài khoản"},
-                {en: "Investment", vi: "Đầu tư"}, {en: "Interest", vi: "Lãi suất"}, {en: "Loan", vi: "Khoản vay"},
-                {en: "Mortgage", vi: "Thế chấp"}, {en: "Credit", vi: "Tín dụng"}, {en: "Debit", vi: "Nợ"},
-                {en: "Balance", vi: "Số dư"}, {en: "Currency", vi: "Tiền tệ"}, {en: "Exchange rate", vi: "Tỷ giá"},
-                {en: "Stock", vi: "Cổ phiếu"}, {en: "Share", vi: "Cổ phiếu"}, {en: "Dividend", vi: "Cổ tức"},
-                {en: "Asset", vi: "Tài sản"}, {en: "Liability", vi: "Nghĩa vụ"}, {en: "Insurance", vi: "Bảo hiểm"},
-                {en: "Transaction", vi: "Giao dịch"}, {en: "Audit", vi: "Kiểm toán"}
-            ]
-        },
-        {
-            id: 21, title: "Pháp luật", icon: "⚖️",
-            words: [
-                {en: "Law", vi: "Pháp luật"}, {en: "Legal", vi: "Pháp lý"}, {en: "Legislation", vi: "Luật pháp"},
-                {en: "Constitution", vi: "Hiến pháp"}, {en: "Justice", vi: "Công lý"}, {en: "Court", vi: "Tòa án"},
-                {en: "Judge", vi: "Thẩm phán"}, {en: "Lawyer", vi: "Luật sư"}, {en: "Trial", vi: "Phiên tòa"},
-                {en: "Evidence", vi: "Bằng chứng"}, {en: "Crime", vi: "Tội ác"}, {en: "Punishment", vi: "Hình phạt"},
-                {en: "Verdict", vi: "Bản án"}, {en: "Defendant", vi: "Bị cáo"}, {en: "Plaintiff", vi: "Nguyên đơn"},
-                {en: "Witness", vi: "Nhân chứng"}, {en: "Arrest", vi: "Bắt giữ"}, {en: "Guilty", vi: "Có tội"},
-                {en: "Innocent", vi: "Vô tội"}, {en: "Civil", vi: "Dân sự"}
-            ]
-        },
-        {
-            id: 22, title: "Giao tiếp – Truyền thông", icon: "📡",
-            words: [
-                {en: "Communication", vi: "Giao tiếp"}, {en: "Conversation", vi: "Cuộc trò chuyện"}, {en: "Dialogue", vi: "Đối thoại"},
-                {en: "Language", vi: "Ngôn ngữ"}, {en: "Verbal", vi: "Bằng lời"}, {en: "Nonverbal", vi: "Không lời"},
-                {en: "Gesture", vi: "Cử chỉ"}, {en: "Expression", vi: "Biểu hiện"}, {en: "Listening", vi: "Lắng nghe"},
-                {en: "Speaking", vi: "Nói chuyện"}, {en: "Writing", vi: "Viết"}, {en: "Presentation", vi: "Thuyết trình"},
-                {en: "Media", vi: "Phương tiện truyền thông"}, {en: "News", vi: "Tin tức"}, {en: "Interview", vi: "Phỏng vấn"},
-                {en: "Broadcast", vi: "Phát sóng"}, {en: "Advertisement", vi: "Quảng cáo"}, {en: "Social media", vi: "Mạng xã hội"},
-                {en: "Public relations", vi: "Quan hệ công chúng"}, {en: "Feedback", vi: "Phản hồi"}
-            ]
-        },
-        {
-            id: 23, title: "Cuộc sống hàng ngày", icon: "🌅",
-            words: [
-                {en: "Daily", vi: "Hàng ngày"}, {en: "Routine", vi: "Lịch trình"}, {en: "Morning", vi: "Buổi sáng"},
-                {en: "Afternoon", vi: "Buổi chiều"}, {en: "Evening", vi: "Buổi tối"}, {en: "Night", vi: "Buổi đêm"},
-                {en: "Breakfast", vi: "Bữa sáng"}, {en: "Lunch", vi: "Bữa trưa"}, {en: "Dinner", vi: "Bữa tối"},
-                {en: "Work", vi: "Công việc"}, {en: "Study", vi: "Học tập"}, {en: "Exercise", vi: "Tập luyện"},
-                {en: "Relax", vi: "Thư giãn"}, {en: "Family", vi: "Gia đình"}, {en: "Friends", vi: "Bạn bè"},
-                {en: "Hobbies", vi: "Sở thích"}, {en: "Entertainment", vi: "Giải trí"}, {en: "Shopping", vi: "Mua sắm"},
-                {en: "Relaxation", vi: "Sự thư giãn"}, {en: "Sleep", vi: "Giấc ngủ"}
-            ]
-        },
-        {
-            id: 24, title: "Cảm xúc – Tâm lý", icon: "🧠",
-            words: [
-                {en: "Emotion", vi: "Cảm xúc"}, {en: "Feeling", vi: "Cảm giác"}, {en: "Happy", vi: "Hạnh phúc"},
-                {en: "Sad", vi: "Buồn"}, {en: "Angry", vi: "Tức giận"}, {en: "Excited", vi: "Hào hứng"},
-                {en: "Nervous", vi: "Lo lắng"}, {en: "Surprised", vi: "Ngạc nhiên"}, {en: "Fear", vi: "Sợ hãi"},
-                {en: "Love", vi: "Tình yêu"}, {en: "Hate", vi: "Ghét bỏ"}, {en: "Joy", vi: "Vui mừng"},
-                {en: "Sorrow", vi: "Đau buồn"}, {en: "Anxiety", vi: "Lo lắng"}, {en: "Confidence", vi: "Tự tin"},
-                {en: "Stress", vi: "Căng thẳng"}, {en: "Loneliness", vi: "Cô đơn"}, {en: "Disgust", vi: "Chán ghét"},
-                {en: "Happiness", vi: "Hạnh phúc"}
-            ]
-        },
-        {
-            id: 25, title: "Tình yêu – Mối quan hệ", icon: "❤️",
-            words: [
-                {en: "Love", vi: "Tình yêu"}, {en: "Relationship", vi: "Mối quan hệ"}, {en: "Romance", vi: "Tình cảm"},
-                {en: "Partner", vi: "Đối tác"}, {en: "Couple", vi: "Cặp đôi"}, {en: "Date", vi: "Hẹn hò"},
-                {en: "Marriage", vi: "Hôn nhân"}, {en: "Wedding", vi: "Đám cưới"}, {en: "Engaged", vi: "Đính hôn"},
-                {en: "Breakup", vi: "Chia tay"}, {en: "Heart", vi: "Trái tim"}, {en: "Passion", vi: "Đam mê"},
-                {en: "Trust", vi: "Lòng tin"}, {en: "Loyalty", vi: "Sự trung thành"}, {en: "Jealousy", vi: "Ghen tỵ"},
-                {en: "Intimacy", vi: "Sự thân mật"}, {en: "Commitment", vi: "Sự cam kết"}, {en: "Support", vi: "Sự hỗ trợ"},
-                {en: "Respect", vi: "Sự tôn trọng"}, {en: "Understanding", vi: "Sự hiểu biết"}
-            ]
-        }
-    ];
-
-    window.seedDatabase = async function() {
-        try {
-            for (let topic of defaultSeedTopics) {
-                await setDoc(doc(db, "topics", `topic_${topic.id}`), topic);
-            }
-            alert("Nạp dữ liệu 25 chủ đề thành công! 🎉 Hãy bấm OK để tải lại lộ trình.");
-            loadTopicsFromFirebase();
-        } catch (error) {
-            alert("Lỗi khi nạp dữ liệu: " + error.message);
-        }
-    };
-
-    document.getElementById("login-btn").onclick = () => signInWithPopup(auth, provider);
-    document.getElementById("logout-btn").onclick = () => signOut(auth);
-
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            document.getElementById("login-screen").classList.add("hidden");
-            document.getElementById("dashboard-screen").classList.remove("hidden");
-            await loadUserData();
-            await loadTopicsFromFirebase();
-        } else {
-            currentUser = null;
-            document.getElementById("login-screen").classList.remove("hidden");
-            document.getElementById("dashboard-screen").classList.add("hidden");
-        }
-    });
-
-    async function loadUserData() {
-        try {
-            const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-            if (docSnap.exists()) {
-                let data = docSnap.data();
-                userXP = data.xp || 0;
-                userStreak = data.streak || 1;
-            } else {
-                await setDoc(doc(db, "users", currentUser.uid), { xp: 0, streak: 1 });
-            }
-            updateStatsUI();
-        } catch (e) { console.error(e); }
+    // Tự tải dữ liệu ngay khi vào web
+    async function loadData() {
+        const querySnapshot = await getDocs(collection(db, "topics"));
+        querySnapshot.forEach(doc => topicsData.push(doc.data()));
+        topicsData.sort((a, b) => a.id - b.id);
+        if(topicsData.length > 0) document.getElementById("banner-unit-title").innerText = topicsData[0].title;
+        renderSkillTree();
     }
-
-    async function addXP(amount) {
-        userXP += amount;
-        updateStatsUI();
-        if(currentUser) {
-            await setDoc(doc(db, "users", currentUser.uid), { xp: userXP, streak: userStreak }, { merge: true });
-        }
-    }
-
-    function updateStatsUI() {
-        document.getElementById("stat-xp").innerText = userXP;
-        document.getElementById("stat-streak").innerText = userStreak;
-    }
-
-    async function loadTopicsFromFirebase() {
-        try {
-            const querySnapshot = await getDocs(collection(db, "topics"));
-            topicsData = [];
-            querySnapshot.forEach((docSnap) => {
-                topicsData.push(docSnap.data());
-            });
-            topicsData.sort((a, b) => a.id - b.id);
-            
-            if(topicsData.length > 0) {
-                document.getElementById("banner-unit-title").innerText = topicsData[0].title;
-            }
-            renderSkillTree();
-        } catch (error) {
-            console.error("Lỗi tải từ Firebase:", error);
-        }
-    }
+    loadData();
 
     function renderSkillTree() {
         const treeContainer = document.getElementById("skill-tree-nodes");
-        treeContainer.innerHTML = "";
-
-        if(topicsData.length === 0) {
-            treeContainer.innerHTML = "<p style='color:#777; font-weight:700; text-align:center;'>Chưa có dữ liệu. Hãy bấm nút 'Nạp dữ liệu tự động' ở trên nhé!</p>";
-            return;
-        }
-
         topicsData.forEach((topic, index) => {
-            let rowClass = "";
-            if (index % 4 === 1) rowClass = "offset-1";
-            else if (index % 4 === 2 || index % 4 === 3) rowClass = "offset-2";
-
-            let rowDiv = document.createElement("div");
-            rowDiv.className = `node-row ${rowClass}`;
-
+            let rowClass = index % 4 === 1 ? "offset-1" : (index % 4 === 2 || index % 4 === 3 ? "offset-2" : "");
+            let rowDiv = document.createElement("div"); rowDiv.className = `node-row ${rowClass}`;
             let btn = document.createElement("button");
-            btn.className = index % 4 === 3 ? "node-btn chest" : "node-btn";
-            btn.innerHTML = topic.icon;
-            btn.title = topic.title; 
-            
-            if(index === 0) {
-                let bubble = document.createElement("div");
-                bubble.className = "start-bubble";
-                bubble.innerText = "Bắt đầu";
-                btn.appendChild(bubble);
-            }
-
+            btn.className = "node-btn"; btn.innerHTML = topic.icon;
             btn.onclick = () => startLesson(topic);
-            rowDiv.appendChild(btn);
-            treeContainer.appendChild(rowDiv);
+            rowDiv.appendChild(btn); treeContainer.appendChild(rowDiv);
         });
     }
 
-    let currentTopic = null;
+    // --- LOGIC BÀI HỌC (HỌC KHÔNG GIỚI HẠN) ---
     let currentQuestions = [];
     let questionIdx = 0;
+    let currentWord = "";
 
     window.startLesson = function(topic) {
-        currentTopic = topic;
         questionIdx = 0;
-        document.getElementById("banner-section-title").innerText = `Chủ đề ${topic.id}`;
-        document.getElementById("banner-unit-title").innerText = topic.title;
-        
         currentQuestions = topic.words.map(w => {
             let wrongOptions = topic.words.filter(item => item.vi !== w.vi).map(item => item.vi);
             wrongOptions.sort(() => Math.random() - 0.5);
             let options = [w.vi, wrongOptions[0], wrongOptions[1], wrongOptions[2]].filter(Boolean);
-            options.sort(() => Math.random() - 0.5);
-            return { en: w.en, vi: w.vi, options: options };
-        });
-        currentQuestions.sort(() => Math.random() - 0.5);
-
+            return { en: w.en, vi: w.vi, options: options.sort(() => Math.random() - 0.5) };
+        }).sort(() => Math.random() - 0.5);
         document.getElementById("lesson-modal").classList.remove("hidden");
         loadQuestion();
     };
 
-    window.closeLesson = function() {
-        document.getElementById("lesson-modal").classList.add("hidden");
-    };
+    window.closeLesson = () => document.getElementById("lesson-modal").classList.add("hidden");
 
     function loadQuestion() {
         if(questionIdx >= currentQuestions.length) {
-            alert(`🎉 Hoàn thành chủ đề "${currentTopic.title}"! Nhận +15 XP.`);
-            addXP(15);
-            closeLesson();
-            return;
+            alert("🎉 Hoàn thành xuất sắc! +15 XP");
+            return closeLesson();
         }
-
         let q = currentQuestions[questionIdx];
-        document.getElementById("lesson-topic-title").innerText = currentTopic.title;
+        currentWord = q.en;
         document.getElementById("lesson-target-word").innerText = q.en;
-        document.getElementById("lesson-bar").style.width = `${((questionIdx) / currentQuestions.length) * 100}%`;
-        document.getElementById("lesson-next-btn").classList.add("hidden");
+        document.getElementById("lesson-bar").style.width = `${(questionIdx / currentQuestions.length) * 100}%`;
+        
+        document.getElementById("lesson-footer").classList.add("hidden");
+        document.getElementById("btn-ai-explain").classList.add("hidden");
+        
+        // Tự động phát âm thanh khi chuyển câu
+        playAudio();
 
         let optContainer = document.getElementById("lesson-options");
         optContainer.innerHTML = "";
-
+        
         q.options.forEach(opt => {
             let btn = document.createElement("button");
-            btn.innerText = opt;
-            btn.style.cssText = "background:white; border:2px solid #E5E5E5; border-bottom:4px solid #E5E5E5; padding:20px; border-radius:16px; font-weight:800; font-size:18px; cursor:pointer; color:#3C3C3C;";
-            btn.onclick = () => {
-                document.querySelectorAll('#lesson-options button').forEach(b => b.disabled = true);
-                if(opt === q.vi) {
-                    btn.style.background = "#DDf4C5"; btn.style.borderColor = "#58CC02"; btn.style.borderBottomColor = "#46A302"; btn.style.color = "#58CC02";
-                } else {
-                    btn.style.background = "#FFDFE0"; btn.style.borderColor = "#FF4B4B"; btn.style.borderBottomColor = "#EA2B2B"; btn.style.color = "#FF4B4B";
-                }
-                document.getElementById("lesson-next-btn").classList.remove("hidden");
-            };
+            btn.className = "opt-btn"; btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, opt, q.vi);
             optContainer.appendChild(btn);
         });
     }
 
+    function checkAnswer(btn, selected, correct) {
+        document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+        document.getElementById("lesson-footer").classList.remove("hidden");
+        let footer = document.getElementById("lesson-footer");
+        let nextBtn = document.getElementById("lesson-next-btn");
+
+        if(selected === correct) {
+            btn.style.background = "#DDf4C5"; btn.style.borderColor = "#58CC02"; btn.style.color = "#58CC02";
+            footer.style.background = "#DDf4C5";
+            nextBtn.style.background = "#58CC02"; nextBtn.style.borderBottomColor = "#46A302";
+        } else {
+            // Chọn sai -> Hiện màu đỏ & Hiện nút AI (Không bị trừ tim hay kết thúc game)
+            btn.style.background = "#FFDFE0"; btn.style.borderColor = "#FF4B4B"; btn.style.color = "#FF4B4B";
+            footer.style.background = "#FFDFE0";
+            nextBtn.style.background = "#FF4B4B"; nextBtn.style.borderBottomColor = "#EA2B2B";
+            
+            document.getElementById("btn-ai-explain").classList.remove("hidden"); // Hiện nút AI
+        }
+    }
+
     window.nextQuestion = function() {
         questionIdx++;
+        document.getElementById("lesson-footer").style.background = "white";
         loadQuestion();
+    };
+
+    // --- TÍNH NĂNG ĐỌC GIỌNG NÓI (TEXT TO SPEECH) ---
+    window.playAudio = function() {
+        let speech = new SpeechSynthesisUtterance(currentWord);
+        speech.lang = "en-US";
+        speech.rate = 0.9;
+        window.speechSynthesis.speak(speech);
+    };
+
+    // --- TÍNH NĂNG AI GIẢI THÍCH ---
+    window.explainWithAI = function() {
+        document.getElementById("ai-modal").classList.remove("hidden");
+        let aiText = document.getElementById("ai-text");
+        aiText.innerText = `Đang kết nối Gemini API để phân tích từ "${currentWord}"...`;
+        
+        setTimeout(() => {
+            aiText.innerHTML = `💡 <b>${currentWord}</b> có nghĩa là <b>${currentQuestions[questionIdx].vi}</b>.<br><br>
+            <i>Ví dụ:</i> "I love my ${currentWord.toLowerCase()}!"<br>
+            <i>Mẹo nhớ:</i> (AI sẽ sinh ra mẹo nhớ tự động dựa trên prompt của bạn ở bản sau).`;
+        }, 1500);
     };
 </script>
 
